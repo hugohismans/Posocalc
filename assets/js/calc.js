@@ -49,7 +49,14 @@
     return Math.round(Math.round(ml / pas) * pas * 1000) / 1000;
   }
 
-  /** Fraction lisible pour les formes solides : 0,5 -> « ½ ». */
+  /**
+   * Nombre d'unités sous une forme lisible à voix haute.
+   *
+   * Une fraction seule reste une fraction (« ½ »), mais un nombre mixte est
+   * explicitement additionné (« 1 + ½ ») : accolés, le nombre et la fraction
+   * se lisent mal — « 1 ½ » peut se comprendre comme un onzième et demi ou
+   * comme une coquille.
+   */
   function fractionUnites(n) {
     var entier = Math.floor(n + 1e-9);
     var reste = n - entier;
@@ -57,9 +64,10 @@
     if (Math.abs(reste - 0.25) < 0.02) frac = '¼';
     else if (Math.abs(reste - 0.5) < 0.02) frac = '½';
     else if (Math.abs(reste - 0.75) < 0.02) frac = '¾';
-    else if (reste > 0.02) return nombre(n, 2);
+    // Aucune fraction simple : on retombe sur la décimale, sans zéro inutile.
+    else if (reste > 0.02) return nombre(n);
     if (entier === 0) return frac || '0';
-    return frac ? entier + ' ' + frac : String(entier);
+    return frac ? entier + ' + ' + frac : String(entier);
   }
 
   /* ---------------------------------------------------------------- */

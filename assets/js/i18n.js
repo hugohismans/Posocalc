@@ -379,6 +379,15 @@
     return u ? (u[langue] || u.fr) : code;
   }
 
+  /**
+   * Le seuil du pluriel diffère d'une langue à l'autre : le français garde le
+   * singulier sous deux (« 1,5 comprimé »), le néerlandais dès qu'on dépasse
+   * l'unité (« 1,5 tabletten », mais « ½ tablet »).
+   */
+  function pluriel(n) {
+    return langue === 'nl' ? n > 1 : n >= 2;
+  }
+
   /** Champ du fichier de données : chaîne simple ou { fr, nl }. */
   function tr(valeur) {
     if (valeur === null || valeur === undefined) return '';
@@ -402,6 +411,7 @@
     },
     t: t,
     tr: tr,
-    unite: unite
+    unite: unite,
+    pluriel: pluriel
   };
 })(window);

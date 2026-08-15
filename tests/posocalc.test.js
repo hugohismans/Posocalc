@@ -199,6 +199,30 @@ const cles = r => r.avertissements.map(a => a.cle);
         plaf.etapes.some(e => e.cle === 'calc.etape.plafondJour'), plaf.etapes.map(e=>e.cle));
 }
 
+/* --- 10 bis. Fractions et pluriels ---------------------------------- */
+{
+  check('fraction 0,5 -> ½', C.fractionUnites(0.5) === '½', C.fractionUnites(0.5));
+  check('fraction 1,5 -> 1 + ½', C.fractionUnites(1.5) === '1 + ½', C.fractionUnites(1.5));
+  check('fraction 2 -> 2', C.fractionUnites(2) === '2');
+  check('fraction 0,25 -> ¼', C.fractionUnites(0.25) === '¼');
+  check('fraction 1,25 -> 1 + ¼', C.fractionUnites(1.25) === '1 + ¼', C.fractionUnites(1.25));
+  check('fraction 2,75 -> 2 + ¾', C.fractionUnites(2.75) === '2 + ¾', C.fractionUnites(2.75));
+  check('fraction 1,1 -> decimale', C.fractionUnites(1.1) === '1,1', C.fractionUnites(1.1));
+
+  // Le seuil du pluriel n'est pas le meme dans les deux langues.
+  I.definir('fr');
+  check('FR : 1 -> singulier', !I.pluriel(1));
+  check('FR : 1,5 -> singulier', !I.pluriel(1.5));
+  check('FR : 2 -> pluriel', I.pluriel(2));
+  check('FR : ½ -> singulier', !I.pluriel(0.5));
+  I.definir('nl');
+  check('NL : ½ -> singulier', !I.pluriel(0.5));
+  check('NL : 1 -> singulier', !I.pluriel(1));
+  check('NL : 1,5 -> pluriel', I.pluriel(1.5));
+  check('NL : 2 -> pluriel', I.pluriel(2));
+  I.definir('fr');
+}
+
 /* --- 11. Horaires suggeres -------------------------------------------- */
 {
   check('horaires 3 prises', C.horaires(3).join(' ') === '7:00 15:00 23:00', C.horaires(3));

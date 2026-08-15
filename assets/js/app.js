@@ -650,7 +650,7 @@ var CHAMPS_TEXTE = ['nom', 'qualif', 'inami', 'adresse', 'tel'];
   function nomUnite(forme, n) {
     var u = forme.uniteNom;
     if (!u) return I18n.langue() === 'nl' ? 'eenheid' : 'unité';
-    return tr(n > 1 ? u.pl : u.un);
+    return tr(I18n.pluriel(n) ? u.pl : u.un);
   }
 
   /** « 6,4 ml (320 mg) » ou « 320 mg = 1 ½ comprimé ». */
