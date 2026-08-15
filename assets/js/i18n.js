@@ -262,6 +262,23 @@
     'md.adresse': { fr: 'Adresse', nl: 'Adres' },
     'md.tel': { fr: 'Téléphone', nl: 'Telefoon' },
     'md.enregistrer': { fr: 'Enregistrer', nl: 'Opslaan' },
+    'md.logo': { fr: 'Logo', nl: 'Logo' },
+    'md.logoAide': {
+      fr: 'Logo du cabinet ou de la maison médicale, affiché en haut de la feuille remise au patient. L’image est redimensionnée et conservée dans ce navigateur uniquement.',
+      nl: 'Logo van de praktijk of het wijkgezondheidscentrum, bovenaan het blad voor de patiënt. De afbeelding wordt verkleind en enkel in deze browser bewaard.'
+    },
+    'md.logoChoisir': { fr: 'Choisir une image…', nl: 'Een afbeelding kiezen…' },
+    'md.logoRetirer': { fr: 'Retirer le logo', nl: 'Logo verwijderen' },
+    'md.logoAjoute': { fr: 'Logo enregistré', nl: 'Logo opgeslagen' },
+    'md.logoRetire': { fr: 'Logo retiré', nl: 'Logo verwijderd' },
+    'md.logoInvalide': {
+      fr: 'Ce fichier n’a pas pu être lu comme une image.',
+      nl: 'Dit bestand kon niet als afbeelding gelezen worden.'
+    },
+    'md.logoTropGros': {
+      fr: 'Image trop lourde pour être conservée par le navigateur. Essayez un fichier plus petit.',
+      nl: 'Afbeelding te zwaar om door de browser bewaard te worden. Probeer een kleiner bestand.'
+    },
     'md.enregistre': { fr: 'Coordonnées enregistrées', nl: 'Gegevens opgeslagen' },
     'md.exemple.qualif': { fr: 'Médecin généraliste', nl: 'Huisarts' },
 

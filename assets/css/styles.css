@@ -7,6 +7,7 @@
   --teal-700: #0f766e;
   --teal-600: #14867c;
   --teal-50:  #ecfdf9;
+  --sur-accent: #ffffff;   /* texte posé sur la couleur d'accent */
   --ambre-600: #b45309;
   --ambre-50:  #fffbeb;
   --ambre-200: #fde68a;
@@ -30,11 +31,17 @@
   --ombre-forte: 0 8px 28px rgba(16, 24, 40, .14);
 }
 
+/* Le lecteur a trois états, pas deux : « clair », « sombre », et le réglage
+   système par défaut, qui ne pose aucun attribut sur la racine. Les jetons
+   sombres sont donc déclarés deux fois — sous prefers-color-scheme pour
+   l'état non marqué, et sous [data-theme="dark"] pour le choix explicite.
+   Les deux listes doivent rester rigoureusement identiques. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --teal-700: #2dd4bf;
     --teal-600: #14b8a6;
     --teal-50:  #0c2b28;
+    --sur-accent: #06231f;
     --ambre-600: #fbbf24;
     --ambre-50:  #2c2311;
     --ambre-200: #6b4f13;
@@ -55,7 +62,36 @@
   }
 }
 
+:root[data-theme="dark"] {
+  --teal-700: #2dd4bf;
+  --teal-600: #14b8a6;
+  --teal-50:  #0c2b28;
+  --sur-accent: #06231f;
+  --ambre-600: #fbbf24;
+  --ambre-50:  #2c2311;
+  --ambre-200: #6b4f13;
+  --rouge-600: #fca5a5;
+  --rouge-50:  #2c1618;
+  --rouge-200: #6b2427;
+
+  --fond:        #0f1418;
+  --surface:     #171d23;
+  --surface-alt: #1f262e;
+  --bord:        #2b333c;
+  --bord-fort:   #3d4650;
+  --texte:       #e7ecf1;
+  --texte-doux:  #a7b1bc;
+  --texte-faible:#7b8792;
+  --ombre: 0 1px 2px rgba(0,0,0,.3), 0 4px 12px rgba(0,0,0,.25);
+  --ombre-forte: 0 8px 28px rgba(0,0,0,.5);
+}
+
 * { box-sizing: border-box; }
+
+/* Une règle d'affichage d'auteur (display: grid/flex) l'emporte sur le
+   [hidden] de la feuille de style du navigateur : l'élément « masqué »
+   reste alors visible et continue d'intercepter les clics. */
+[hidden] { display: none !important; }
 
 html { -webkit-text-size-adjust: 100%; }
 
@@ -147,12 +183,11 @@ main { padding: 18px 0 56px; }
   width: 24px; height: 24px;
   border-radius: 50%;
   background: var(--teal-700);
-  color: #fff;
+  color: var(--sur-accent);
   font-size: .78rem;
   font-weight: 700;
   flex: none;
 }
-@media (prefers-color-scheme: dark) { .etape { color: #06231f; } }
 
 .carte__aide {
   margin: 12px 0 0;
@@ -313,9 +348,8 @@ input[type=number] { -moz-appearance: textfield; }
 .puce[aria-pressed="true"] {
   background: var(--teal-700);
   border-color: var(--teal-700);
-  color: #fff;
+  color: var(--sur-accent);
 }
-@media (prefers-color-scheme: dark) { .puce[aria-pressed="true"] { color: #06231f; } }
 
 /* ------------------------------- Liste ---------------------------- */
 
@@ -502,9 +536,8 @@ input[type=range] {
 .segmente button[aria-pressed="true"] {
   background: var(--teal-700);
   border-color: var(--teal-700);
-  color: #fff;
+  color: var(--sur-accent);
 }
-@media (prefers-color-scheme: dark) { .segmente button[aria-pressed="true"] { color: #06231f; } }
 
 /* ------------------------------- Résultat ------------------------- */
 
@@ -624,9 +657,8 @@ input[type=range] {
   cursor: pointer;
   transition: background .12s, border-color .12s, color .12s;
 }
-.btn--primary { background: var(--teal-700); color: #fff; }
+.btn--primary { background: var(--teal-700); color: var(--sur-accent); }
 .btn--primary:hover { background: var(--teal-600); }
-@media (prefers-color-scheme: dark) { .btn--primary { color: #06231f; } }
 .btn--fantome {
   background: var(--surface);
   border-color: var(--bord-fort);
@@ -648,9 +680,6 @@ input[type=range] {
   z-index: 100;
   overflow-y: auto;
 }
-/* `display: grid` l'emporterait sur le [hidden] de la feuille de style
-   du navigateur : la modale masquée continuerait d'intercepter les clics. */
-.modal[hidden] { display: none; }
 .modal__box {
   background: var(--surface);
   border-radius: var(--r-l);
@@ -841,6 +870,39 @@ input[type=range] {
   .champ--large { grid-column: 1 / -1; }
 }
 
+.logo-reglage {
+  border-top: 1px solid var(--bord);
+  padding-top: 13px;
+  margin-bottom: 14px;
+}
+.logo-reglage__titre {
+  display: block;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--texte-doux);
+}
+.logo-reglage .carte__aide { margin: 4px 0 10px; }
+.logo-reglage__ligne { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+/* Le <label> sert de bouton pour l'<input type="file">, masqué car inutilisable tel quel. */
+label.btn { display: inline-block; cursor: pointer; }
+
+.logo-apercu {
+  margin-top: 11px;
+  padding: 12px;
+  border: 1px dashed var(--bord-fort);
+  border-radius: var(--r-m);
+  /* Damier discret : un logo à fond transparent reste lisible. */
+  background-color: #fff;
+  background-image:
+    linear-gradient(45deg, #eef1f4 25%, transparent 25%, transparent 75%, #eef1f4 75%),
+    linear-gradient(45deg, #eef1f4 25%, transparent 25%, transparent 75%, #eef1f4 75%);
+  background-size: 14px 14px;
+  background-position: 0 0, 7px 7px;
+  display: flex;
+  justify-content: center;
+}
+.logo-apercu img { max-width: 100%; max-height: 90px; width: auto; height: auto; }
+
 /* ------------------------------- Aperçu feuille patient ------------ */
 
 .apercu {
@@ -852,7 +914,6 @@ input[type=range] {
   padding: 18px;
   display: block;
 }
-.apercu[hidden] { display: none; }
 .apercu__box {
   max-width: 760px;
   margin: 0 auto;
@@ -891,6 +952,14 @@ input[type=range] {
   padding-bottom: 12px;
 }
 .feuille__medecin p { margin: 0; font-size: 12.5px; color: #4b5663; }
+.feuille__logo {
+  display: block;
+  max-width: 210px;
+  max-height: 75px;
+  width: auto;
+  height: auto;
+  margin-bottom: 9px;
+}
 .feuille__nom { font-weight: 700; font-size: 15px !important; color: #16202b !important; }
 .feuille__medecin--vide p { font-style: italic; color: #8a939e; }
 .feuille__titre {

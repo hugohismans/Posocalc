@@ -88,9 +88,27 @@ Le site est entièrement statique — pas de dépendance, pas d’étape de buil
 npm start          # puis ouvrir http://localhost:8080
 ```
 
-Publication : n’importe quel hébergeur statique convient. Pour GitHub Pages,
-activer Pages sur la branche voulue, dossier racine (le fichier `.nojekyll` est
-déjà présent).
+### Publier sur GitHub Pages
+
+Le dépôt est déjà prêt (fichier `.nojekyll` présent, tout est à la racine) :
+
+1. `Settings` → `Pages` ;
+2. sous *Build and deployment*, source **Deploy from a branch** ;
+3. choisir la branche, dossier **`/ (root)`**, puis `Save`.
+
+L’adresse `https://<compte>.github.io/Posocalc/` est active après une minute.
+
+### Version en un seul fichier
+
+```bash
+npm run build      # produit dist/posocalc.html
+```
+
+Ce fichier contient la feuille de style et tous les scripts. Il fonctionne sans
+serveur : on peut l’enregistrer sur un téléphone et s’en servir **hors
+connexion**, en salle d’attente ou en visite. `npm run build` génère aussi
+`dist/posocalc.fragment.html`, sans squelette de page, pour les hébergeurs qui
+fournissent eux-mêmes `<head>` et `<body>`.
 
 ## Modifier ou ajouter un médicament
 

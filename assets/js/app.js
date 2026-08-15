@@ -34,7 +34,10 @@
     detailOuvert: false
   };
 
-  var medecin = { nom: '', qualif: '', inami: '', adresse: '', tel: '' };
+  // `logo` est une image redimensionnée, stockée en data URL avec les
+// coordonnées : c'est une donnée du prescripteur, pas du patient.
+var medecin = { nom: '', qualif: '', inami: '', adresse: '', tel: '', logo: '' };
+var CHAMPS_TEXTE = ['nom', 'qualif', 'inami', 'adresse', 'tel'];
 
   var $ = function (sel) { return document.querySelector(sel); };
   var els = {};
@@ -184,6 +187,10 @@
     $('#lbl-md-tel').textContent = t('md.tel');
     $('#md-qualif').placeholder = t('md.exemple.qualif');
     $('#btn-md-save').textContent = t('md.enregistrer');
+    $('#lbl-md-logo').textContent = t('md.logo');
+    $('#aide-logo').textContent = t('md.logoAide');
+    $('#lbl-logo-choisir').textContent = t('md.logoChoisir');
+    $('#btn-logo-retirer').textContent = t('md.logoRetirer');
 
     $('#pied-projet').innerHTML = t('pied.projet');
     $('#pied-sources-lbl').textContent = t('pied.sources');
@@ -255,24 +262,100 @@
         });
       }
     } catch (e) { /* stockage indisponible ou JSON corrompu */ }
-    Object.keys(medecin).forEach(function (k) {
+    CHAMPS_TEXTE.forEach(function (k) {
       var el = document.getElementById('md-' + k);
       if (el) el.value = medecin[k];
+    });
+    majApercuLogo();
+  }
+
+  /** Écrit les coordonnées dans le navigateur. Renvoie false si le quota explose. */
+  function sauverMedecin() {
+    try {
+      global.localStorage.setItem(CLE_MEDECIN, JSON.stringify(medecin));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function majApercuLogo() {
+    var apercu = $('#logo-apercu');
+    var img = $('#logo-img');
+    var retirer = $('#btn-logo-retirer');
+    if (medecin.logo) {
+      img.src = medecin.logo;
+      apercu.hidden = false;
+      retirer.hidden = false;
+    } else {
+      img.removeAttribute('src');
+      apercu.hidden = true;
+      retirer.hidden = true;
+    }
+  }
+
+  /**
+   * Redimensionne l'image côté navigateur avant stockage : un logo de
+   * cabinet pèse souvent plusieurs mégaoctets, or localStorage plafonne
+   * autour de 5 Mo. On garde le PNG (transparence) sauf s'il est trop
+   * lourd, auquel cas on repasse en JPEG.
+   */
+  function redimensionner(fichier, maxL, maxH, quand) {
+    var lecteur = new FileReader();
+    lecteur.onerror = function () { quand(new Error('lecture')); };
+    lecteur.onload = function () {
+      var img = new Image();
+      img.onerror = function () { quand(new Error('image')); };
+      img.onload = function () {
+        var ratio = Math.min(maxL / img.width, maxH / img.height, 1);
+        var l = Math.max(1, Math.round(img.width * ratio));
+        var h = Math.max(1, Math.round(img.height * ratio));
+        var toile = document.createElement('canvas');
+        toile.width = l;
+        toile.height = h;
+        toile.getContext('2d').drawImage(img, 0, 0, l, h);
+        var png = toile.toDataURL('image/png');
+        quand(null, png.length > 300000 ? toile.toDataURL('image/jpeg', 0.85) : png);
+      };
+      img.src = lecteur.result;
+    };
+    lecteur.readAsDataURL(fichier);
+  }
+
+  function initLogo() {
+    $('#md-logo').addEventListener('change', function (e) {
+      var fichier = e.target.files && e.target.files[0];
+      e.target.value = '';                       // permet de re-choisir le même fichier
+      if (!fichier) return;
+      redimensionner(fichier, 420, 150, function (err, dataUrl) {
+        if (err) { toast(t('md.logoInvalide')); return; }
+        var precedent = medecin.logo;
+        medecin.logo = dataUrl;
+        if (sauverMedecin()) {
+          majApercuLogo();
+          toast(t('md.logoAjoute'));
+        } else {
+          medecin.logo = precedent;
+          toast(t('md.logoTropGros'));
+        }
+      });
+    });
+
+    $('#btn-logo-retirer').addEventListener('click', function () {
+      medecin.logo = '';
+      sauverMedecin();
+      majApercuLogo();
+      toast(t('md.logoRetire'));
     });
   }
 
   function initMedecin() {
     $('#btn-md-save').addEventListener('click', function () {
-      Object.keys(medecin).forEach(function (k) {
+      CHAMPS_TEXTE.forEach(function (k) {
         var el = document.getElementById('md-' + k);
         if (el) medecin[k] = el.value.trim();
       });
-      try {
-        global.localStorage.setItem(CLE_MEDECIN, JSON.stringify(medecin));
-        toast(t('md.enregistre'));
-      } catch (e) {
-        toast(t('res.copieKo'));
-      }
+      toast(sauverMedecin() ? t('md.enregistre') : t('res.copieKo'));
     });
   }
 
@@ -898,8 +981,10 @@
     var p = phraseOrdonnance(ctx);
     var date = dateDuJour();
 
-    var enTete = medecin.nom || medecin.inami || medecin.adresse || medecin.tel
+    var aDesCoord = medecin.nom || medecin.inami || medecin.adresse || medecin.tel || medecin.logo;
+    var enTete = aDesCoord
       ? '<div class="feuille__medecin">' +
+          (medecin.logo ? '<img class="feuille__logo" src="' + esc(medecin.logo) + '" alt="">' : '') +
           (medecin.nom ? '<p class="feuille__nom">' + esc(medecin.nom) + '</p>' : '') +
           (medecin.qualif ? '<p>' + esc(medecin.qualif) + '</p>' : '') +
           (medecin.adresse ? '<p>' + esc(medecin.adresse) + '</p>' : '') +
@@ -1054,6 +1139,7 @@
     initPatient();
     chargerMedecin();
     initMedecin();
+    initLogo();
     peindreFiltres();
     initFiltres();
     initRecherche();

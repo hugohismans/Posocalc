@@ -106,6 +106,18 @@
       <div class="champ champ--large"><label for="md-adresse" id="lbl-md-adresse"></label>
         <div class="champ__saisie"><input type="text" id="md-adresse" autocomplete="off"></div></div>
     </div>
+
+    <div class="logo-reglage">
+      <span class="logo-reglage__titre" id="lbl-md-logo"></span>
+      <p class="carte__aide" id="aide-logo"></p>
+      <div class="logo-reglage__ligne">
+        <label class="btn btn--fantome btn--petit" for="md-logo" id="lbl-logo-choisir"></label>
+        <input type="file" id="md-logo" accept="image/*" hidden>
+        <button class="btn btn--fantome btn--petit" id="btn-logo-retirer" type="button" hidden></button>
+      </div>
+      <div class="logo-apercu" id="logo-apercu" hidden><img id="logo-img" alt=""></div>
+    </div>
+
     <button class="btn btn--fantome btn--petit" id="btn-md-save" type="button"></button>
   </details>
 

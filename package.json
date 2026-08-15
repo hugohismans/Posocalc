@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "test": "node tests/posocalc.test.js",
-    "start": "python3 -m http.server 8080"
+    "start": "python3 -m http.server 8080",
+    "build": "node tools/build-fichier-unique.js --fragment"
   },
   "license": "MIT"
 }
