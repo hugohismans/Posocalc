@@ -1852,11 +1852,14 @@
       verifie: true,
       synonymes: ['vitamine D', 'rachitisme', 'prevention', 'rachitis', 'preventie', 'd-cure'],
       formes: [
-        { id: 'gouttes', nom: { fr: 'Gouttes D-Cure 2 400 UI / ml (1 ml = 36 gouttes ≈ 67 UI par goutte)',
-                                nl: 'D-Cure druppels 2 400 IE / ml (1 ml = 36 druppels ≈ 67 IE per druppel)' },
-          type: 'liquide', parMl: 2400,
-          note: { fr: '400 UI correspondent à environ 6 gouttes (0,17 ml). Vérifier la concentration : elle varie fortement d’une spécialité à l’autre.',
-                  nl: '400 IE komt overeen met ongeveer 6 druppels (0,17 ml). Controleer de concentratie: die verschilt sterk per specialiteit.' } },
+        { id: 'gouttes', nom: { fr: 'Gouttes D-Cure — 2 400 UI / ml, soit 36 gouttes par ml',
+                                nl: 'D-Cure druppels — 2 400 IE / ml, dus 36 druppels per ml' },
+          type: 'autre', parUnite: 2400 / 36, uniteNom: U_GOUTTE, pasUnite: 1,
+          note: { fr: '1 ml = 36 gouttes = 2 400 UI, soit environ 67 UI par goutte : 400 UI correspondent à 6 gouttes. Vérifier la concentration de la spécialité, elle varie fortement d’une marque à l’autre.',
+                  nl: '1 ml = 36 druppels = 2 400 IE, dus ongeveer 67 IE per druppel: 400 IE komt overeen met 6 druppels. Controleer de concentratie van de specialiteit, die verschilt sterk per merk.' } },
+        { id: 'gouttesMl', nom: { fr: 'Gouttes D-Cure — dose exprimée en ml (2 400 UI / ml)',
+                                  nl: 'D-Cure druppels — dosis uitgedrukt in ml (2 400 IE / ml)' },
+          type: 'liquide', parMl: 2400 },
         { id: 'unidose', nom: { fr: 'Unidose / capsule 25 000 UI', nl: 'Unidosis / capsule 25 000 IE' }, type: 'autre', parUnite: 25000, uniteNom: U_AMP }
       ],
       schemas: [
