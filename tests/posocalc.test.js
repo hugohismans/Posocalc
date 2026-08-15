@@ -239,6 +239,48 @@ const cles = r => r.avertissements.map(a => a.cle);
   I.definir('fr');
 }
 
+/* --- 10 ter. Compatibilite schema / presentation ---------------------- */
+{
+  // Une fiche peut melanger les unites (salbutamol : µg par bouffee, mg par
+  // nebulisation). Croiser un schema avec la presentation de l'autre
+  // diviserait des µg par des mg/ml : le resultat serait absurde mais credible.
+  const sal = med('salbutamol');
+  const parUnite = {};
+  sal.schemas.forEach(s => { parUnite[s.id] = C.formesCompatibles(sal, s).map(f => f.id); });
+  check('salbutamol : le schema aerosol ne propose que l aerosol',
+        parUnite.mdi.join() === 'mdi', parUnite.mdi);
+  check('salbutamol : le schema nebulisation ne propose que la solution',
+        parUnite.neb.join() === 'neb5', parUnite.neb);
+
+  // Le croisement interdit produisait 40 ml de solution pour 200 µg.
+  const absurde = C.calculer({med:sal, schema:sal.schemas[0],
+                              forme:sal.formes.find(f => f.id === 'neb5'),
+                              patient:{poids:15, ageMois:48}});
+  check('le croisement interdit donnerait bien un volume absurde',
+        absurde.volumeParPrise > 20, absurde.volumeParPrise);
+  const choisie = C.meilleureForme({med:sal, schema:sal.schemas[0],
+                                    patient:{poids:15, ageMois:48}});
+  check('la selection automatique ne peut pas le proposer', choisie.id === 'mdi', choisie.id);
+
+  // Regle generale : chaque schema doit garder au moins une presentation
+  // utilisable, sauf les fiches qui n'en ont aucune (preparation magistrale).
+  D.MEDICAMENTS.forEach(m => {
+    if (!m.formes || !m.formes.length) return;
+    m.schemas.forEach(s => {
+      check('presentation utilisable : ' + m.id + '/' + s.id,
+            C.formesCompatibles(m, s).length > 0);
+    });
+  });
+  // Toute unite declaree sur une presentation doit exister sur un schema.
+  D.MEDICAMENTS.forEach(m => {
+    const unites = new Set(m.schemas.map(s => s.unite));
+    (m.formes || []).forEach(f => {
+      if (f.unite) check('unite de presentation connue : ' + m.id + '/' + f.id,
+                         unites.has(f.unite), f.unite);
+    });
+  });
+}
+
 /* --- 11. Horaires suggeres -------------------------------------------- */
 {
   check('horaires 3 prises', C.horaires(3).join(' ') === '7:00 15:00 23:00', C.horaires(3));

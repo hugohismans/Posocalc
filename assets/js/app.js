@@ -483,8 +483,11 @@ var CHAMPS_TEXTE = ['nom', 'qualif', 'inami', 'adresse', 'tel'];
 
   /** Présélectionne la présentation la plus praticable, sauf choix explicite. */
   function autoForme(med, schema) {
-    if (!med.formes || !med.formes.length) { etat.formeId = null; return; }
-    if (etat.formeManuelle && parId(med.formes, etat.formeId)) return;
+    // On raisonne sur les présentations compatibles avec le schéma : un choix
+    // manuel devenu incompatible après changement d'indication est refait.
+    var compatibles = Calc.formesCompatibles(med, schema);
+    if (!compatibles.length) { etat.formeId = null; return; }
+    if (etat.formeManuelle && parId(compatibles, etat.formeId)) return;
     var f = Calc.meilleureForme({
       med: med, schema: schema,
       patient: { poids: etat.poids, ageMois: etat.ageMois },
@@ -492,7 +495,7 @@ var CHAMPS_TEXTE = ['nom', 'qualif', 'inami', 'adresse', 'tel'];
       prises: etat.prises || (schema.prises && schema.prises[0]) || 1,
       sufJour: t('res.sufJour')
     });
-    etat.formeId = f ? f.id : med.formes[0].id;
+    etat.formeId = f ? f.id : compatibles[0].id;
   }
 
   function fermerDetail() {
@@ -512,7 +515,7 @@ var CHAMPS_TEXTE = ['nom', 'qualif', 'inami', 'adresse', 'tel'];
     var med = medParId(etat.medId);
     if (!med) return null;
     var schema = parId(med.schemas, etat.schemaId) || med.schemas[0];
-    var forme = med.formes ? parId(med.formes, etat.formeId) : null;
+    var forme = parId(Calc.formesCompatibles(med, schema), etat.formeId);
     var prises = etat.prises || (schema.prises && schema.prises[0]) || 1;
     var res = Calc.calculer({
       med: med, schema: schema, forme: forme,
@@ -603,10 +606,11 @@ var CHAMPS_TEXTE = ['nom', 'qualif', 'inami', 'adresse', 'tel'];
       '</div>';
     }
 
-    /* Présentation */
-    if (med.formes && med.formes.length) {
+    /* Présentation : uniquement celles qui vont avec ce schéma */
+    var compatibles = Calc.formesCompatibles(med, schema);
+    if (compatibles.length) {
       html += '<div class="reglage"><label for="sel-forme">' + esc(t('reg.presentation')) + '</label><select id="sel-forme">';
-      med.formes.forEach(function (f) {
+      compatibles.forEach(function (f) {
         html += '<option value="' + esc(f.id) + '"' + (forme && f.id === forme.id ? ' selected' : '') + '>' +
           esc(tr(f.nom)) + '</option>';
       });

@@ -28,6 +28,10 @@
  *       parUnite  quantité par comprimé / sachet / suppositoire
  *       uniteNom  { un: { fr, nl }, pl: { fr, nl } } — singulier et pluriel
  *                 (le pluriel néerlandais n'est pas un simple « +s »)
+ *       unite     unité de la présentation, si elle diffère de celle du
+ *                 schéma (salbutamol : µg par bouffée, mg par nébulisation).
+ *                 Une présentation d'une autre unité que le schéma n'est pas
+ *                 proposée : les croiser donnerait un volume absurde.
  *       pasUnite  plus petite fraction administrable (défaut : 0,5 pour
  *                 un comprimé, 1 sinon). Mettre 1 pour une gélule.
  *       note      { fr, nl } précision affichée sous le sélecteur
@@ -1219,12 +1223,12 @@
       verifie: true,
       synonymes: ['asthme', 'bronchodilatateur', 'aerosol', 'ventoline', 'astma', 'puffer', 'kortwerkend'],
       formes: [
-        { id: 'mdi', nom: { fr: 'Aérosol-doseur 100 µg / bouffée (+ chambre d’inhalation)',
+        { id: 'mdi', unite: 'µg', nom: { fr: 'Aérosol-doseur 100 µg / bouffée (+ chambre d’inhalation)',
                             nl: 'Dosisaerosol 100 µg / pufje (+ voorzetkamer)' },
           type: 'autre', parUnite: 100, uniteNom: U_BOUFFEE,
           note: { fr: '0 à 3 ans : chambre d’inhalation + masque ; 4 à 6 ans : chambre d’inhalation. La poudre à inhaler ne convient qu’à partir de 6 ans.',
                   nl: '0 tot 3 jaar: voorzetkamer + masker; 4 tot 6 jaar: voorzetkamer. Inhalatiepoeder is pas geschikt vanaf 6 jaar.' } },
-        { id: 'neb5', nom: { fr: 'Solution pour nébulisation 5 mg / ml (flacon de 10 ml)',
+        { id: 'neb5', unite: 'mg', nom: { fr: 'Solution pour nébulisation 5 mg / ml (flacon de 10 ml)',
                              nl: 'Verneveloplossing 5 mg / ml (flacon van 10 ml)' }, type: 'liquide', parMl: 5,
           note: { fr: '2,5 mg correspondent à 0,5 ml et 5 mg à 1 ml de solution, à diluer dans du sérum physiologique.',
                   nl: '2,5 mg komt overeen met 0,5 ml en 5 mg met 1 ml oplossing, te verdunnen in fysiologisch serum.' } }
