@@ -13,15 +13,24 @@ par prise** — plus de règle de trois à faire de tête au milieu d’une cons
 
 - L’outil se contente d’appliquer une règle de trois à partir des valeurs
   saisies dans `assets/js/data.js`.
-- **Aucune fiche n’a été validée par un professionnel.** Toutes portent le
-  drapeau `verifie: false`, ce qui déclenche un bandeau rouge dans l’interface.
-- Chaque posologie affiche **d’où vient le chiffre** (guide BAPCOC, CBIP, RCP…)
-  et un lien direct vers la fiche CBIP/BCFI de la substance.
+- **Aucune fiche n’a été validée par un professionnel de santé.** Les valeurs
+  ont été relues contre les sources primaires (voir ci-dessous), mais cette
+  relecture est documentaire : elle ne remplace pas une validation clinique.
+- Les fiches dont **toutes** les valeurs ont été retrouvées dans une source
+  primaire portent `verifie: true` ; les autres restent à `verifie: false`, ce
+  qui déclenche un bandeau rouge dans l’interface. Au 15 août 2026 : 28 fiches
+  sur 36 sont à `true`.
+- Chaque posologie affiche **d’où vient le chiffre** (guide BAPCOC, CBIP) et un
+  lien direct vers la fiche CBIP/BCFI de la substance.
+- **[`docs/verification-posologies.md`](docs/verification-posologies.md)**
+  documente, schéma par schéma, la valeur d’avant, celle de la source, la
+  référence exacte et le verdict (confirmé / corrigé / introuvable). Neuf
+  valeurs n’ont aucune source primaire belge et y sont signalées comme telles.
 - Avant tout usage clinique, chaque fiche doit être confrontée à la notice du
   produit, au [CBIP](https://www.cbip.be/fr/start) /
   [BCFI](https://www.bcfi.be/nl/start) et au
-  [guide BAPCOC](https://organesdeconcertation.sante.belgique.be/sites/default/files/content/bapcoc_guide_traitement_antiinfectieux_2022.pdf),
-  puis passée à `verifie: true`.
+  [guide BAPCOC](https://organesdeconcertation.sante.belgique.be/sites/default/files/documents/guide_belge_de_traitement_anti-infectieux_en_pratique_ambulatoire_-_mai_2026.pdf)
+  (édition de mai 2026).
 - La responsabilité de la prescription reste entièrement celle du prescripteur.
 
 ## Ce que fait l’outil

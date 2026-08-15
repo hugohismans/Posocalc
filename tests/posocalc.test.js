@@ -95,25 +95,36 @@ const cles = r => r.avertissements.map(a => a.cle);
 
 /* --- 5. Mode 'unique' : dexamethasone ------------------------------ */
 {
+  // La seule présentation commercialisée en Belgique est l'ampoule
+  // d'Aacidexam à 5 mg/ml (CBIP 2026) ; il n'existe plus de forme orale.
   const m = med('dexamethasone');
-  const r = C.calculer({med:m, schema:m.schemas[0], forme:m.formes.find(f=>f.id==='sol4'),
+  const r = C.calculer({med:m, schema:m.schemas[0], forme:m.formes.find(f=>f.id==='sol5'),
                         patient:{poids:14, ageMois:30}, dosePerKg:0.15, prises:1});
   check('dexa 14kg x0,15 -> 2,1 mg', Math.abs(r.totalJour - 2.1) < 1e-9, r.totalJour);
   check('dexa 1 seule prise', r.prises === 1);
-  check('dexa 0,525 ml arrondi au pas 0,05 -> 0,55', r.volumeParPrise === 0.55, r.volumeParPrise);
+  check('dexa 0,42 ml arrondi au pas 0,05 -> 0,4', r.volumeParPrise === 0.4, r.volumeParPrise);
 }
 
 /* --- 6. Mode 'paliers' par age : cetirizine ------------------------ */
 {
   const m = med('cetirizine');
   const sch = m.schemas[0];
-  const r = C.calculer({med:m, schema:sch, forme:m.formes.find(f=>f.id==='gouttes'),
-                        patient:{poids:16, ageMois:48}});          // 4 ans -> 2,5 mg x2
-  check('cetirizine 4 ans -> palier 2-5 ans', r.palier && r.palier.label.fr === '2 à 5 ans',
+  // Plus aucune forme liquide n'est commercialisée en Belgique et le CBIP
+  // ne donne pas de posologie avant 6 ans : un enfant de 4 ans ne tombe
+  // dans aucune tranche et le calcul doit être bloqué.
+  const petit = C.calculer({med:m, schema:sch, forme:m.formes.find(f=>f.id==='cp10'),
+                            patient:{poids:16, ageMois:48}});
+  check('cetirizine 4 ans -> aucune tranche', petit.blocages.length === 1, petit.blocages);
+  check('cetirizine 4 ans -> blocage traduisible',
+        I.t(petit.blocages[0].cle) !== petit.blocages[0].cle, petit.blocages[0].cle);
+
+  const r = C.calculer({med:m, schema:sch, forme:m.formes.find(f=>f.id==='cp10'),
+                        patient:{poids:24, ageMois:96}});          // 8 ans -> 5 mg x2
+  check('cetirizine 8 ans -> palier 6-11 ans', r.palier && r.palier.label.fr === '6 à 11 ans',
         r.palier && r.palier.label.fr);
-  check('cetirizine -> 5 mg/j reparti en 2', r.totalJour === 5 && r.prises === 2);
-  check('cetirizine -> 2,5 mg/prise', r.parPrise === 2.5, r.parPrise);
-  check('cetirizine -> 0,25 ml de gouttes 10 mg/ml', r.volumeParPrise === 0.25, r.volumeParPrise);
+  check('cetirizine -> 10 mg/j reparti en 2', r.totalJour === 10 && r.prises === 2);
+  check('cetirizine -> 5 mg/prise', r.parPrise === 5, r.parPrise);
+  check('cetirizine -> un demi comprime de 10 mg', r.unitesParPrise === 0.5, r.unitesParPrise);
 
   const sansAge = C.calculer({med:m, schema:sch, forme:null, patient:{poids:16, ageMois:null}});
   check('cetirizine sans age -> blocage', sansAge.blocages.length === 1);
@@ -129,13 +140,18 @@ const cles = r => r.avertissements.map(a => a.cle);
 {
   const m = med('oseltamivir');
   const sch = m.schemas[0];
-  const forme = m.formes.find(f=>f.id==='susp');
+  // Aucune suspension buvable n'est commercialisée en Belgique (CBIP 2026) :
+  // seules les gélules de 30, 45 et 75 mg existent.
+  const forme = m.formes.find(f=>f.id==='gel30');
+  // Sans présentation : on vérifie la tranche de poids elle-même.
   [[10,60],[15,60],[20,90],[30,120],[45,150]].forEach(([p, attendu]) => {
-    const r = C.calculer({med:m, schema:sch, forme, patient:{poids:p, ageMois:60}});
+    const r = C.calculer({med:m, schema:sch, forme:null, patient:{poids:p, ageMois:60}});
     check('oseltamivir '+p+' kg -> '+attendu+' mg/j', r.totalJour === attendu, r.totalJour);
   });
   const r15 = C.calculer({med:m, schema:sch, forme, patient:{poids:15}});
-  check('oseltamivir 15 kg -> 5 ml/prise (6 mg/ml)', r15.volumeParPrise === 5, r15.volumeParPrise);
+  check('oseltamivir 15 kg -> 1 gelule de 30 mg par prise', r15.unitesParPrise === 1, r15.unitesParPrise);
+  const petit = C.calculer({med:m, schema:sch, forme, patient:{poids:8}});
+  check('oseltamivir 8 kg -> hors tranche (3 mg/kg non couvert)', petit.blocages.length === 1, petit.blocages);
 }
 
 /* --- 8. Fractions non administrables -------------------------------- */
@@ -221,6 +237,48 @@ const cles = r => r.avertissements.map(a => a.cle);
   check('NL : 1,5 -> pluriel', I.pluriel(1.5));
   check('NL : 2 -> pluriel', I.pluriel(2));
   I.definir('fr');
+}
+
+/* --- 10 ter. Compatibilite schema / presentation ---------------------- */
+{
+  // Une fiche peut melanger les unites (salbutamol : µg par bouffee, mg par
+  // nebulisation). Croiser un schema avec la presentation de l'autre
+  // diviserait des µg par des mg/ml : le resultat serait absurde mais credible.
+  const sal = med('salbutamol');
+  const parUnite = {};
+  sal.schemas.forEach(s => { parUnite[s.id] = C.formesCompatibles(sal, s).map(f => f.id); });
+  check('salbutamol : le schema aerosol ne propose que l aerosol',
+        parUnite.mdi.join() === 'mdi', parUnite.mdi);
+  check('salbutamol : le schema nebulisation ne propose que la solution',
+        parUnite.neb.join() === 'neb5', parUnite.neb);
+
+  // Le croisement interdit produisait 40 ml de solution pour 200 µg.
+  const absurde = C.calculer({med:sal, schema:sal.schemas[0],
+                              forme:sal.formes.find(f => f.id === 'neb5'),
+                              patient:{poids:15, ageMois:48}});
+  check('le croisement interdit donnerait bien un volume absurde',
+        absurde.volumeParPrise > 20, absurde.volumeParPrise);
+  const choisie = C.meilleureForme({med:sal, schema:sal.schemas[0],
+                                    patient:{poids:15, ageMois:48}});
+  check('la selection automatique ne peut pas le proposer', choisie.id === 'mdi', choisie.id);
+
+  // Regle generale : chaque schema doit garder au moins une presentation
+  // utilisable, sauf les fiches qui n'en ont aucune (preparation magistrale).
+  D.MEDICAMENTS.forEach(m => {
+    if (!m.formes || !m.formes.length) return;
+    m.schemas.forEach(s => {
+      check('presentation utilisable : ' + m.id + '/' + s.id,
+            C.formesCompatibles(m, s).length > 0);
+    });
+  });
+  // Toute unite declaree sur une presentation doit exister sur un schema.
+  D.MEDICAMENTS.forEach(m => {
+    const unites = new Set(m.schemas.map(s => s.unite));
+    (m.formes || []).forEach(f => {
+      if (f.unite) check('unite de presentation connue : ' + m.id + '/' + f.id,
+                         unites.has(f.unite), f.unite);
+    });
+  });
 }
 
 /* --- 11. Horaires suggeres -------------------------------------------- */

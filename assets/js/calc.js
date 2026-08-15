@@ -374,13 +374,29 @@
   /* ---------------------------------------------------------------- */
 
   /**
+   * Présentations utilisables avec ce schéma.
+   *
+   * Une même fiche peut mélanger les unités : le salbutamol se dose en µg par
+   * bouffée et en mg par nébulisation. Croiser un schéma avec la présentation
+   * de l'autre diviserait des µg par des mg/ml et produirait un volume absurde
+   * mais crédible. Une présentation dont l'unité diffère de celle du schéma
+   * est donc écartée.
+   */
+  function formesCompatibles(med, schema) {
+    var u = schema.unite || 'mg';
+    return (med.formes || []).filter(function (f) {
+      return (f.unite || u) === u;
+    });
+  }
+
+  /**
    * Choisit la présentation la plus praticable : un volume de 2 à 10 ml chez
    * le petit enfant, des unités entières chez le grand. Évite de proposer
    * 13 ml de sirop faiblement dosé quand une suspension plus concentrée existe.
    */
   function meilleureForme(params) {
     var med = params.med;
-    var formes = med.formes || [];
+    var formes = formesCompatibles(med, params.schema);
     if (!formes.length) return null;
 
     var base = calculer({
@@ -447,6 +463,7 @@
   global.PosocalcCalc = {
     calculer: calculer,
     meilleureForme: meilleureForme,
+    formesCompatibles: formesCompatibles,
     trouverPalier: trouverPalier,
     arrondi: arrondi,
     arrondiVolume: arrondiVolume,
