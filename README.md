@@ -33,6 +33,23 @@ par prise** — plus de règle de trois à faire de tête au milieu d’une cons
   (édition de mai 2026).
 - La responsabilité de la prescription reste entièrement celle du prescripteur.
 
+## Le rapport de vérification
+
+Les 36 fiches ont été confrontées aux sources belges — guide BAPCOC, répertoire
+CBIP — valeur par valeur. Le rapport dit ce qui a été confirmé, ce qui a été
+corrigé, et ce qui reste sans source.
+
+- **[Lire le rapport](https://hugohismans.github.io/Posocalc/docs/verification-posologies.html)**
+  (page lisible, index par médicament)
+- Source : [`docs/verification-posologies.md`](docs/verification-posologies.md)
+
+```bash
+npm run rapport    # régénère la page à partir du markdown
+```
+
+Sept erreurs de concentration y sont documentées, celles qui produisent
+directement un mauvais volume à la seringue.
+
 ## Ce que fait l’outil
 
 **Bilingue.** Français et néerlandais, y compris les indications, les

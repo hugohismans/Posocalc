@@ -6,7 +6,8 @@
   "scripts": {
     "test": "node tests/posocalc.test.js",
     "start": "python3 -m http.server 8080",
-    "build": "node tools/build-fichier-unique.js --fragment"
+    "build": "node tools/build-fichier-unique.js --fragment",
+    "rapport": "node tools/rapport-html.js"
   },
   "license": "MIT"
 }
