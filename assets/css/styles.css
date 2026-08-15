@@ -171,7 +171,7 @@ main { padding: 18px 0 56px; }
 .grille-patient .btn--petit { grid-column: 1 / -1; justify-self: start; }
 
 @media (min-width: 560px) {
-  .grille-patient { grid-template-columns: 1.1fr 1.3fr auto; }
+  .grille-patient { grid-template-columns: 1fr 1.15fr 1.2fr auto; }
   .grille-patient .btn--petit { grid-column: auto; }
 }
 
@@ -694,14 +694,291 @@ input[type=range] {
 .pied p { margin: 0 0 6px; }
 .pied__legal { font-style: italic; }
 
-/* ------------------------------- Impression ----------------------- */
+/* ------------------------------- Détail du calcul ------------------ */
+
+.calcul {
+  border-top: 1px solid var(--bord);
+  background: var(--surface);
+}
+.calcul > summary {
+  cursor: pointer;
+  padding: 11px 16px;
+  font-size: .85rem;
+  font-weight: 640;
+  color: var(--teal-700);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.calcul > summary::-webkit-details-marker { display: none; }
+.calcul > summary::before {
+  content: "▸";
+  font-size: .8rem;
+  transition: transform .15s;
+  display: inline-block;
+}
+.calcul[open] > summary::before { transform: rotate(90deg); }
+.calcul > summary:hover { background: var(--surface-alt); }
+
+.calcul__corps { padding: 0 16px 15px; }
+.calcul__intro {
+  margin: 0 0 11px;
+  font-size: .8rem;
+  color: var(--texte-faible);
+}
+.calcul__liste { list-style: none; margin: 0; padding: 0; }
+
+.etape-calc {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  border-top: 1px dashed var(--bord);
+  font-size: .84rem;
+}
+.etape-calc:first-child { border-top: 0; }
+.etape-calc__num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--surface-alt);
+  border: 1px solid var(--bord);
+  color: var(--texte-doux);
+  font-size: .7rem;
+  font-weight: 700;
+  margin-top: 1px;
+}
+.etape-calc__corps { flex: 1; min-width: 0; }
+.etape-calc__label { display: block; color: var(--texte-doux); }
+.etape-calc__formule {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .8rem;
+  color: var(--texte);
+  margin-top: 2px;
+  word-break: break-word;
+}
+.etape-calc__res {
+  flex: none;
+  font-weight: 700;
+  color: var(--teal-700);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  margin-top: 1px;
+}
+
+/* ------------------------------- Bloc sources ---------------------- */
+
+.sourcebox {
+  margin-top: 14px;
+  border: 1px solid var(--bord-fort);
+  border-left: 3px solid var(--teal-700);
+  border-radius: var(--r-m);
+  background: var(--surface-alt);
+  padding: 13px 15px;
+}
+.sourcebox__titre {
+  margin: 0 0 7px;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--texte-doux);
+}
+.sourcebox__ligne { margin: 0 0 4px; font-size: .84rem; color: var(--texte-doux); }
+.sourcebox__liste {
+  margin: 0 0 9px;
+  padding-left: 18px;
+  font-size: .84rem;
+}
+.sourcebox__liste li + li { margin-top: 3px; }
+.sourcebox__avert {
+  margin: 10px 0 0;
+  padding-top: 9px;
+  border-top: 1px solid var(--bord);
+  font-size: .82rem;
+  color: var(--rouge-600);
+}
+
+.badge--dev {
+  background: var(--ambre-50);
+  color: var(--ambre-600);
+  border: 1px solid var(--ambre-200);
+  font-size: .6rem;
+  vertical-align: 2px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.entete__actions { display: flex; gap: 6px; flex: none; }
+
+/* ------------------------------- Coordonnées prescripteur ---------- */
+
+.carte--medecin > summary {
+  cursor: pointer;
+  font-weight: 640;
+  font-size: .92rem;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.carte--medecin > summary::-webkit-details-marker { display: none; }
+.carte--medecin > summary::before { content: "▸"; transition: transform .15s; display: inline-block; }
+.carte--medecin[open] > summary::before { transform: rotate(90deg); }
+
+.grille-medecin {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 11px;
+  margin: 14px 0;
+}
+@media (min-width: 560px) {
+  .grille-medecin { grid-template-columns: 1fr 1fr; }
+  .champ--large { grid-column: 1 / -1; }
+}
+
+/* ------------------------------- Aperçu feuille patient ------------ */
+
+.apercu {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 14, 20, .6);
+  z-index: 110;
+  overflow-y: auto;
+  padding: 18px;
+  display: block;
+}
+.apercu[hidden] { display: none; }
+.apercu__box {
+  max-width: 760px;
+  margin: 0 auto;
+  background: var(--surface);
+  border-radius: var(--r-l);
+  box-shadow: var(--ombre-forte);
+  overflow: hidden;
+}
+.apercu__barre {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--bord);
+  background: var(--surface-alt);
+  flex-wrap: wrap;
+}
+.apercu__barre h2 { margin: 0; font-size: .95rem; letter-spacing: -.01em; }
+.apercu__actions { display: flex; gap: 7px; }
+
+/* La feuille reste en couleurs « papier » : c'est ce qui sera imprimé. */
+.feuille {
+  background: #fff;
+  color: #16202b;
+  padding: 26px 28px 22px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.feuille__entete {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  border-bottom: 2px solid #0f766e;
+  padding-bottom: 12px;
+}
+.feuille__medecin p { margin: 0; font-size: 12.5px; color: #4b5663; }
+.feuille__nom { font-weight: 700; font-size: 15px !important; color: #16202b !important; }
+.feuille__medecin--vide p { font-style: italic; color: #8a939e; }
+.feuille__titre {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f766e;
+  text-align: right;
+  letter-spacing: -.01em;
+}
+.feuille__patient {
+  margin: 12px 0 16px;
+  font-size: 13px;
+  color: #4b5663;
+}
+.feuille__etiq {
+  margin: 0 0 3px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: #7b8792;
+}
+.feuille__med { margin-bottom: 14px; }
+.feuille__nomMed { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -.01em; }
+.feuille__nomMed span { font-weight: 500; color: #5b6773; font-size: 15px; }
+.feuille__forme { margin: 3px 0 0; font-size: 13px; color: #4b5663; }
+
+.feuille__dose {
+  border: 2px solid #0f766e;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  background: #f2fbf9;
+}
+.feuille__gros {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 750;
+  letter-spacing: -.03em;
+  line-height: 1.1;
+}
+.feuille__gros-sub { font-size: 15px; font-weight: 500; color: #4b5663; letter-spacing: 0; }
+.feuille__rythme { margin: 4px 0 0; font-size: 16px; font-weight: 600; color: #0f766e; }
+
+.feuille__bloc { margin-bottom: 12px; }
+.feuille__bloc p { margin: 0; }
+.feuille__heure {
+  display: inline-block;
+  border: 1px solid #cbd2da;
+  border-radius: 999px;
+  padding: 1px 10px;
+  margin-right: 4px;
+  font-weight: 600;
+  font-size: 13px;
+}
+.feuille__conseils { margin: 0; padding-left: 18px; font-size: 13.5px; }
+.feuille__conseils li + li { margin-top: 3px; }
+.feuille__pied {
+  margin: 16px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid #e2e6eb;
+  font-size: 11px;
+  color: #8a939e;
+  font-style: italic;
+}
+
+/* ------------------------------- Impression ------------------------ */
 
 @media print {
-  .entete, .bandeau, .pied, #section-liste, .carte--patient .btn,
-  .resume__actions, .btn--fermer, .modal, .toast { display: none !important; }
-  body { background: #fff; font-size: 12pt; }
-  .carte, .resultat { box-shadow: none; border-color: #999; }
-  .resultat { background: #fff; }
+  /* Seule la feuille patient est imprimée. */
+  body.mode-apercu > *:not(.apercu) { display: none !important; }
+  body.mode-apercu .apercu {
+    position: static;
+    background: none;
+    padding: 0;
+    overflow: visible;
+  }
+  body.mode-apercu .apercu__box {
+    max-width: none;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  body.mode-apercu .apercu__barre { display: none !important; }
+  body.mode-apercu .feuille { padding: 0; font-size: 12pt; }
+
+  body { background: #fff; }
+  @page { margin: 16mm; }
   a[href]:after { content: ""; }
 }
 

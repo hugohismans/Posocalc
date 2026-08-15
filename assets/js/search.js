@@ -40,19 +40,30 @@
     return precedente[b.length];
   }
 
-  /** Index de recherche pré-calculé pour une fiche. */
+  /**
+   * Toutes les variantes linguistiques d'un champ : une recherche en
+   * néerlandais doit trouver une fiche affichée en français, et l'inverse.
+   */
+  function variantes(valeur) {
+    if (!valeur) return [];
+    if (typeof valeur === 'string') return [valeur];
+    return Object.keys(valeur).map(function (k) { return valeur[k]; });
+  }
+
+  function ajouter(champs, valeur, poids) {
+    variantes(valeur).forEach(function (v) {
+      var texte = normaliser(v);
+      if (texte) champs.push({ texte: texte, poids: poids });
+    });
+  }
+
+  /** Index de recherche pré-calculé pour une fiche, toutes langues confondues. */
   function indexer(med) {
     var champs = [];
-    champs.push({ texte: normaliser(med.dci), poids: 100 });
-    (med.marques || []).forEach(function (m) {
-      champs.push({ texte: normaliser(m), poids: 90 });
-    });
-    (med.synonymes || []).forEach(function (s) {
-      champs.push({ texte: normaliser(s), poids: 55 });
-    });
-    (med.schemas || []).forEach(function (s) {
-      champs.push({ texte: normaliser(s.indication), poids: 40 });
-    });
+    ajouter(champs, med.dci, 100);
+    (med.marques || []).forEach(function (m) { ajouter(champs, m, 90); });
+    (med.synonymes || []).forEach(function (s) { ajouter(champs, s, 55); });
+    (med.schemas || []).forEach(function (s) { ajouter(champs, s.indication, 40); });
     return champs;
   }
 
@@ -105,9 +116,14 @@
    * @param {Array} medicaments
    * @param {string} requete
    * @param {string|null} categorie  filtre facultatif
+   * @param {function=} nom  med -> libellé affiché, pour le tri alphabétique
+   *                         à score égal (dépend de la langue courante)
    * @returns {Array} fiches triées
    */
-  function rechercher(medicaments, requete, categorie) {
+  function rechercher(medicaments, requete, categorie, nom) {
+    var libelle = nom || function (m) {
+      return typeof m.dci === 'string' ? m.dci : (m.dci.fr || '');
+    };
     var q = normaliser(requete);
     var resultats = [];
 
@@ -124,7 +140,7 @@
 
     resultats.sort(function (a, b) {
       if (b.score !== a.score) return b.score - a.score;
-      return a.med.dci.localeCompare(b.med.dci, 'fr');
+      return libelle(a.med).localeCompare(libelle(b.med), 'fr');
     });
 
     return resultats.map(function (r) { return r.med; });
