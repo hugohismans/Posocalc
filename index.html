@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Posocalc — calculateur de posologie pédiatrique (Belgique)</title>
+<meta name="description" content="Outil d'aide au calcul de posologie pédiatrique en fonction du poids, basé sur les médicaments disponibles en Belgique.">
+<meta name="theme-color" content="#0f766e">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💊</text></svg>">
+</head>
+<body>
+
+<!-- ============================ Avertissement initial ============ -->
+<div class="modal" id="modal-disclaimer" hidden>
+  <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="modal-titre">
+    <h2 id="modal-titre">Avant d’utiliser Posocalc</h2>
+    <p><strong>Posocalc est une calculatrice, pas une référence médicale.</strong></p>
+    <ul>
+      <li>L’outil applique une règle de trois à partir de données saisies dans un fichier local. Il ne remplace ni la notice, ni le CBIP, ni le guide BAPCOC, ni votre jugement clinique.</li>
+      <li>Les fiches marquées <span class="badge badge--warn">non vérifiée</span> n’ont pas encore été relues par un professionnel. <strong>Contrôlez systématiquement</strong> la dose, la concentration de la présentation réellement délivrée et les contre-indications.</li>
+      <li>Le calcul dépend entièrement du poids saisi et de la présentation choisie. Une erreur de saisie donne un résultat faux mais crédible.</li>
+      <li>La responsabilité de la prescription reste entièrement celle du prescripteur.</li>
+    </ul>
+    <button class="btn btn--primary btn--block" id="btn-accepter">J’ai lu et je comprends</button>
+  </div>
+</div>
+
+<!-- ============================ En-tête ========================== -->
+<header class="entete">
+  <div class="conteneur entete__interne">
+    <a class="logo" href="#/">
+      <span class="logo__marque">Posocalc</span>
+      <span class="logo__sous">Posologie pédiatrique · Belgique</span>
+    </a>
+    <button class="btn btn--fantome btn--petit" id="btn-info" type="button">Avertissement</button>
+  </div>
+</header>
+
+<div class="bandeau" role="note">
+  Outil d’aide au calcul — <strong>chaque dose doit être vérifiée par le prescripteur</strong>.
+</div>
+
+<main class="conteneur">
+
+  <!-- ======================== Étape 1 : patient =================== -->
+  <section class="carte carte--patient" aria-labelledby="t-patient">
+    <h2 class="carte__titre" id="t-patient"><span class="etape">1</span> Le patient</h2>
+    <div class="grille-patient">
+      <div class="champ champ--majeur">
+        <label for="poids">Poids <span class="champ__requis">*</span></label>
+        <div class="champ__saisie">
+          <input type="number" id="poids" inputmode="decimal" step="0.1" min="0.5" max="120" placeholder="12,0" autocomplete="off">
+          <span class="champ__unite">kg</span>
+        </div>
+      </div>
+      <div class="champ">
+        <label for="age-valeur">Âge <span class="champ__option">(facultatif)</span></label>
+        <div class="champ__saisie">
+          <input type="number" id="age-valeur" inputmode="numeric" step="1" min="0" max="200" placeholder="3" autocomplete="off">
+          <select id="age-unite" aria-label="Unité d’âge">
+            <option value="ans">ans</option>
+            <option value="mois">mois</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn--fantome btn--petit" id="btn-reset" type="button">Effacer</button>
+    </div>
+    <p class="carte__aide">L’âge sert aux médicaments dosés par tranche d’âge (cétirizine, montélukast, vitamine D…) et aux alertes de contre-indication.</p>
+  </section>
+
+  <!-- ======================== Étape 2 : médicament ================ -->
+  <section class="carte" aria-labelledby="t-med" id="section-liste">
+    <h2 class="carte__titre" id="t-med"><span class="etape">2</span> Le médicament</h2>
+
+    <div class="recherche">
+      <svg class="recherche__icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-4.35-4.35M11 19a8 8 0 110-16 8 8 0 010 16z"/></svg>
+      <input type="search" id="recherche" placeholder="Rechercher : amoxicilline, Augmentin, otite…" autocomplete="off" aria-label="Rechercher un médicament">
+      <button class="recherche__vider" id="btn-vider-recherche" type="button" aria-label="Vider la recherche" hidden>&times;</button>
+    </div>
+
+    <div class="filtres" id="filtres" role="group" aria-label="Filtrer par catégorie"></div>
+
+    <p class="liste__entete" id="liste-entete"></p>
+    <ul class="liste" id="liste"></ul>
+    <p class="vide" id="liste-vide" hidden>Aucun médicament ne correspond à cette recherche.</p>
+  </section>
+
+  <!-- ======================== Étape 3 : résultat ================== -->
+  <section id="detail" class="detail" hidden aria-live="polite"></section>
+
+</main>
+
+<footer class="pied">
+  <div class="conteneur">
+    <p><strong>Posocalc</strong> — projet libre, sans collecte de données. Aucune information patient n’est enregistrée ni transmise.</p>
+    <p>Sources de référence : <a href="https://www.cbip.be/fr/start" target="_blank" rel="noopener">CBIP / BCFI</a> ·
+       <a href="https://www.health.belgium.be/fr/guide-belge-des-traitements-anti-infectieux-en-pratique-ambulatoire" target="_blank" rel="noopener">Guide BAPCOC</a> ·
+       <a href="https://banquededonneesmedicaments.afmps.be/" target="_blank" rel="noopener">Banque de données médicaments AFMPS</a></p>
+    <p class="pied__legal">Les données posologiques fournies avec l’outil sont indicatives et doivent être validées avant tout usage clinique.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/calc.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
