@@ -73,29 +73,34 @@
   /* Sources                                                          */
   /* ---------------------------------------------------------------- */
 
+  /*
+   * Toutes les valeurs de ce fichier ont été relues en août 2026 contre ces
+   * deux sources primaires, réellement consultées (voir
+   * docs/verification-posologies.md pour le détail schéma par schéma).
+   */
   var SRC_BAPCOC = {
     label: {
-      fr: 'Guide BAPCOC — traitements anti-infectieux en pratique ambulatoire',
-      nl: 'BAPCOC-gids — anti-infectieuze behandeling in de ambulante praktijk'
+      fr: 'Guide belge de traitement anti-infectieux en pratique ambulatoire — BAPCOC, édition mai 2026',
+      nl: 'Belgische gids voor anti-infectieuze behandeling in de ambulante praktijk — BAPCOC, editie mei 2026'
     },
     url: {
-      fr: 'https://organesdeconcertation.sante.belgique.be/sites/default/files/content/bapcoc_guide_traitement_antiinfectieux_2022.pdf',
-      nl: 'https://overlegorganen.gezondheid.belgie.be/sites/default/files/documents/gids_2024_updated_20_dec.pdf'
+      fr: 'https://organesdeconcertation.sante.belgique.be/sites/default/files/documents/guide_belge_de_traitement_anti-infectieux_en_pratique_ambulatoire_-_mai_2026.pdf',
+      nl: 'https://overlegorganen.gezondheid.belgie.be/sites/default/files/documents/belgische_gids_voor_anti-infectieuze_behandeling_in_de_ambulante_praktijk_-_mei_2026_0.pdf'
     }
   };
   var SRC_CBIP = {
     label: {
-      fr: 'CBIP — Répertoire commenté des médicaments',
-      nl: 'BCFI — Gecommentarieerd Geneesmiddelenrepertorium'
+      fr: 'CBIP — Répertoire commenté des médicaments, édition 2026',
+      nl: 'BCFI — Gecommentarieerd Geneesmiddelenrepertorium, editie 2026'
     },
     url: { fr: 'https://www.cbip.be/fr/start', nl: 'https://www.bcfi.be/nl/start' }
   };
-  var SRC_RCP = {
+  var SRC_COCHRANE_CROUP = {
     label: {
-      fr: 'RCP de la spécialité (notice / résumé des caractéristiques du produit)',
-      nl: 'SKP van de specialiteit (bijsluiter / samenvatting van de productkenmerken)'
+      fr: 'Cochrane — Glucocorticoïdes dans la laryngite striduleuse de l’enfant (CD001955, mise à jour 2023)',
+      nl: 'Cochrane — Glucocorticoïden bij pseudokroep bij kinderen (CD001955, update 2023)'
     },
-    url: { fr: 'https://www.afmps.be/fr', nl: 'https://www.fagg.be/nl' }
+    url: 'https://www.cochrane.org/evidence/CD001955_glucocorticoids-croup-children'
   };
 
   /* ---------------------------------------------------------------- */
@@ -147,12 +152,12 @@
     {
       id: 'amoxicilline',
       dci: { fr: 'Amoxicilline', nl: 'Amoxicilline' },
-      marques: ['Clamoxyl', 'Amoxypen', 'Docamoxici', 'Amoxicilline EG / Sandoz / Teva'],
+      marques: ['Clamoxyl', 'Amoxicilline EG', 'Amoxicilline Sandoz', 'Amoxicillin AB'],
       cbip: { fr: 'amoxicilline', nl: 'amoxicilline' },
       categorie: 'antibiotique',
       frequent: true,
-      verifie: false,
-      synonymes: ['penicilline A', 'otite', 'angine', 'pneumonie',
+      verifie: true,
+      synonymes: ['penicilline A', 'otite', 'angine', 'pneumonie', 'lyme',
                   'oorontsteking', 'keelontsteking', 'longontsteking'],
       formes: [
         { id: 'susp125', nom: suspOrale(125), type: 'liquide', parMl: 25 },
@@ -160,51 +165,56 @@
         { id: 'susp500', nom: suspOrale(500), type: 'liquide', parMl: 100 },
         { id: 'cp500', nom: { fr: 'Comprimé / gélule 500 mg', nl: 'Tablet / capsule 500 mg' },
           type: 'solide', parUnite: 500, uniteNom: U_CP },
+        { id: 'cp750', nom: comprime('750 mg'), type: 'solide', parUnite: 750, uniteNom: U_CP },
         { id: 'cp1000', nom: comprime('1 g'), type: 'solide', parUnite: 1000, uniteNom: U_CP }
       ],
       schemas: [
         {
           id: 'oma',
           indication: {
-            fr: 'Otite moyenne aiguë, sinusite, pneumonie communautaire',
-            nl: 'Acute middenoorontsteking, sinusitis, buiten het ziekenhuis opgelopen longontsteking'
+            fr: 'Otite moyenne aiguë, rhinosinusite aiguë, pneumonie communautaire',
+            nl: 'Acute middenoorontsteking, acute rinosinusitis, buiten het ziekenhuis opgelopen longontsteking'
           },
           mode: 'jour', unite: 'mg',
-          doseMin: 75, doseUsuelle: 80, doseMax: 100,
+          doseMin: 80, doseUsuelle: 80, doseMax: 90,
           prises: [3], maxJour: 3000,
-          duree: { fr: '5 à 7 jours', nl: '5 tot 7 dagen' },
+          duree: { fr: '5 jours', nl: '5 dagen' },
           note: {
-            fr: 'Doses élevées recommandées en Belgique vu la sensibilité diminuée du pneumocoque.',
-            nl: 'Hoge doses aanbevolen in België wegens de verminderde gevoeligheid van de pneumokok.'
+            fr: 'BAPCOC 2026 : 80-90 mg/kg/j en 3 prises pendant 5 jours ; adulte 3 × 1 g/j. En l’absence d’amélioration après 48 h, remplacer la moitié de la dose par de l’amoxicilline + acide clavulanique.',
+            nl: 'BAPCOC 2026: 80-90 mg/kg/dag in 3 giften gedurende 5 dagen; volwassene 3 × 1 g/dag. Bij onvoldoende verbetering na 48 u wordt de helft van de dosis vervangen door amoxicilline + clavulaanzuur.'
           },
           sources: [SRC_BAPCOC]
         },
         {
           id: 'angine',
           indication: {
-            fr: 'Pharyngite / angine à streptocoque du groupe A',
-            nl: 'Faryngitis / keelontsteking door groep A-streptokokken'
+            fr: 'Pharyngite aiguë (amygdalienne) — 2e choix',
+            nl: 'Acute (tonsillaire) faryngitis — tweede keuze'
           },
           mode: 'jour', unite: 'mg',
           doseMin: 50, doseUsuelle: 50, doseMax: 50,
-          prises: [3, 2], maxJour: 3000,
+          prises: [3], maxJour: 1500,
           duree: { fr: '7 jours', nl: '7 dagen' },
           note: {
-            fr: 'La pénicilline V reste le premier choix ; l’amoxicilline est une alternative.',
-            nl: 'Penicilline V blijft de eerste keuze; amoxicilline is een alternatief.'
+            fr: 'La phénéticilline est le 1er choix du BAPCOC 2026 ; l’amoxicilline s’utilise si elle n’est pas disponible ou trop coûteuse. Enfant < 10 ans : 50 mg/kg/j en 3 prises ; à partir de 10 ans et adulte : 500 mg 3×/j.',
+            nl: 'Feneticilline is de eerste keuze van BAPCOC 2026; amoxicilline wordt gebruikt als die niet beschikbaar of te duur is. Kind < 10 jaar: 50 mg/kg/dag in 3 giften; vanaf 10 jaar en volwassene: 500 mg 3×/dag.'
           },
           sources: [SRC_BAPCOC]
         },
         {
-          id: 'cutane',
+          id: 'lyme',
           indication: {
-            fr: 'Infection cutanée (impétigo, érysipèle)',
-            nl: 'Huidinfectie (impetigo, erysipelas)'
+            fr: 'Érythème migrant (maladie de Lyme) — enfant de moins de 8 ans',
+            nl: 'Erythema migrans (ziekte van Lyme) — kind jonger dan 8 jaar'
           },
           mode: 'jour', unite: 'mg',
-          doseMin: 25, doseUsuelle: 50, doseMax: 50,
-          prises: [3, 4], maxJour: 3000,
-          duree: { fr: '7 jours (impétigo) à 10 jours (érysipèle)', nl: '7 dagen (impetigo) tot 10 dagen (erysipelas)' },
+          doseMin: 50, doseUsuelle: 50, doseMax: 50,
+          prises: [3], maxJour: 1500, maxPrise: 500,
+          duree: { fr: '14 jours', nl: '14 dagen' },
+          note: {
+            fr: 'Alternative à la doxycycline chez l’enfant de moins de 8 ans et pendant la grossesse ou l’allaitement. Maximum 500 mg par prise.',
+            nl: 'Alternatief voor doxycycline bij kinderen jonger dan 8 jaar en tijdens zwangerschap of borstvoeding. Maximaal 500 mg per gift.'
+          },
           sources: [SRC_BAPCOC]
         }
       ],
@@ -222,12 +232,12 @@
     {
       id: 'amoxicilline-clavulanate',
       dci: { fr: 'Amoxicilline + acide clavulanique', nl: 'Amoxicilline + clavulaanzuur' },
-      marques: ['Augmentin', 'Amoxiclav EG / Sandoz / Teva', 'Docamoclan'],
+      marques: ['Augmentin', 'Amoclane / AmoclaneEG', 'Amoxiclav Sandoz', 'Amoxicillin / Clavulanic Acid AB'],
       cbip: { fr: 'amoxicilline', nl: 'amoxicilline' },
       categorie: 'antibiotique',
       frequent: true,
-      verifie: false,
-      synonymes: ['co-amoxiclav', 'augmentin', 'clavulaanzuur'],
+      verifie: true,
+      synonymes: ['co-amoxiclav', 'augmentin', 'clavulaanzuur', 'morsure', 'beet'],
       doseExprimee: {
         fr: 'Les doses sont exprimées en amoxicilline.',
         nl: 'De doses zijn uitgedrukt in amoxicilline.'
@@ -235,42 +245,48 @@
       formes: [
         { id: 'susp4_1_125', nom: { fr: 'Suspension 125 mg / 31,25 mg par 5 ml (4:1)', nl: 'Suspensie 125 mg / 31,25 mg per 5 ml (4:1)' }, type: 'liquide', parMl: 25 },
         { id: 'susp4_1_250', nom: { fr: 'Suspension 250 mg / 62,5 mg par 5 ml (4:1)', nl: 'Suspensie 250 mg / 62,5 mg per 5 ml (4:1)' }, type: 'liquide', parMl: 50 },
-        { id: 'susp8_1', nom: { fr: 'Suspension 100 mg / 12,5 mg par ml (8:1)', nl: 'Suspensie 100 mg / 12,5 mg per ml (8:1)' },
-          type: 'liquide', parMl: 100,
-          note: { fr: 'Rapport 8:1 : permet des doses élevées d’amoxicilline sans excès de clavulanate.',
-                  nl: 'Verhouding 8:1: laat hoge amoxicillinedoses toe zonder overmaat clavulaanzuur.' } },
         { id: 'cp500', nom: comprime('500 mg / 125 mg'), type: 'solide', parUnite: 500, uniteNom: U_CP },
         { id: 'cp875', nom: comprime('875 mg / 125 mg'), type: 'solide', parUnite: 875, uniteNom: U_CP }
       ],
       schemas: [
         {
-          id: 'standard',
+          id: 'stepup',
           indication: {
-            fr: 'Indication courante (OMA compliquée, sinusite, morsure, pneumonie d’inhalation)',
-            nl: 'Gangbare indicatie (gecompliceerde middenoorontsteking, sinusitis, beet, aspiratiepneumonie)'
+            fr: 'Otite moyenne aiguë / rhinosinusite sans amélioration après 48 h (traitement « step up »)',
+            nl: 'Acute middenoorontsteking / rinosinusitis zonder verbetering na 48 u (step-upbehandeling)'
           },
           mode: 'jour', unite: 'mg',
-          doseMin: 75, doseUsuelle: 80, doseMax: 100,
-          prises: [3], maxJour: 3000,
-          duree: { fr: 'selon l’indication', nl: 'afhankelijk van de indicatie' },
+          doseMin: 40, doseUsuelle: 40, doseMax: 40,
+          prises: [3], maxJour: 2625,
+          duree: { fr: '5 jours', nl: '5 dagen' },
           note: {
-            fr: 'Ne pas dépasser 12,5 mg/kg/j d’acide clavulanique : privilégier le rapport 8:1 pour les doses élevées.',
-            nl: 'Niet meer dan 12,5 mg/kg/dag clavulaanzuur: verkies de verhouding 8:1 voor hoge doses.'
+            fr: 'BAPCOC 2026 : la moitié de la dose journalière seulement passe à l’association. À donner AVEC 40 mg/kg/j d’amoxicilline seule (soit 80 mg/kg/j d’amoxicilline au total, dont 10 mg/kg/j d’acide clavulanique). Adulte : 875 mg/125 mg 3×/j.',
+            nl: 'BAPCOC 2026: slechts de helft van de dagdosis wordt vervangen door de associatie. Toe te dienen SAMEN met 40 mg/kg/dag amoxicilline alleen (in totaal dus 80 mg/kg/dag amoxicilline, waarvan 10 mg/kg/dag clavulaanzuur). Volwassene: 875 mg/125 mg 3×/dag.'
           },
-          sources: [SRC_BAPCOC, SRC_CBIP]
+          sources: [SRC_BAPCOC]
         },
         {
-          id: 'faible',
-          indication: { fr: 'Dose standard basse (rapport 4:1)', nl: 'Lage standaarddosis (verhouding 4:1)' },
+          id: 'morsure',
+          indication: {
+            fr: 'Morsure de chat, de chien ou d’humain (prophylaxie ou infection)',
+            nl: 'Kat-, hond- of mensenbeet (profylaxe of infectie)'
+          },
           mode: 'jour', unite: 'mg',
-          doseMin: 45, doseUsuelle: 45, doseMax: 50,
-          prises: [3, 2], maxJour: 1500,
-          sources: [SRC_CBIP]
+          doseMin: 30, doseUsuelle: 35, doseMax: 40,
+          prises: [3], maxJour: 1500,
+          duree: { fr: '5 jours (prophylaxie) ou 7 jours (infection)', nl: '5 dagen (profylaxe) of 7 dagen (infectie)' },
+          note: {
+            fr: 'Vérifier systématiquement le statut vaccinal antitétanique et évaluer le risque de rage.',
+            nl: 'Controleer steeds de tetanusvaccinatiestatus en evalueer het rabiësrisico.'
+          },
+          sources: [SRC_BAPCOC]
         }
       ],
       precautions: [
         { fr: 'Diarrhée fréquente, plus marquée qu’avec l’amoxicilline seule.',
-          nl: 'Vaak diarree, meer uitgesproken dan met amoxicilline alleen.' }
+          nl: 'Vaak diarree, meer uitgesproken dan met amoxicilline alleen.' },
+        { fr: 'Aucune suspension au rapport 8:1 n’est commercialisée en Belgique : les doses élevées d’amoxicilline s’obtiennent en associant de l’amoxicilline seule.',
+          nl: 'In België is geen suspensie met verhouding 8:1 op de markt: hoge amoxicillinedoses worden bereikt door amoxicilline alleen bij te geven.' }
       ],
       contreIndications: [
         ALLERGIE_PENI,
@@ -281,54 +297,63 @@
     },
 
     {
-      id: 'penicilline-v',
-      dci: { fr: 'Phénoxyméthylpénicilline (pénicilline V)', nl: 'Fenoxymethylpenicilline (penicilline V)' },
-      marques: ['Peni-Oral', 'Phénoxyméthylpénicilline (disponibilité à vérifier)'],
-      cbip: { fr: 'phénoxyméthylpénicilline', nl: 'fenoxymethylpenicilline' },
+      id: 'pheneticilline',
+      dci: { fr: 'Phénéticilline', nl: 'Feneticilline' },
+      marques: ['Broxil'],
+      cbip: { fr: 'phénéticilline', nl: 'feneticilline' },
       categorie: 'antibiotique',
       frequent: true,
-      verifie: false,
-      synonymes: ['penicilline V', 'angine', 'streptocoque', 'keelontsteking', 'streptokok'],
+      verifie: true,
+      synonymes: ['penicilline V', 'phenoxymethylpenicilline', 'penicilline a spectre etroit',
+                  'angine', 'streptocoque', 'keelontsteking', 'streptokok', 'smalspectrumpenicilline'],
       formes: [
-        { id: 'susp', nom: suspOrale(250), type: 'liquide', parMl: 50 },
-        { id: 'cp1m', nom: { fr: 'Comprimé 1 000 000 UI (≈ 600 mg)', nl: 'Tablet 1 000 000 IE (≈ 600 mg)' },
-          type: 'solide', parUnite: 600, uniteNom: U_CP }
+        { id: 'susp125', nom: suspOrale(125), type: 'liquide', parMl: 25 },
+        { id: 'gel250', nom: gelule('250 mg'), type: 'solide', parUnite: 250, uniteNom: U_GEL, pasUnite: 1 },
+        { id: 'gel500', nom: gelule('500 mg'), type: 'solide', parUnite: 500, uniteNom: U_GEL, pasUnite: 1 }
       ],
       schemas: [
         {
-          id: 'angine',
+          id: 'pharyngite',
           indication: {
-            fr: 'Pharyngite / angine à streptocoque du groupe A',
-            nl: 'Faryngitis / keelontsteking door groep A-streptokokken'
+            fr: 'Pharyngite aiguë (amygdalienne) — 1er choix, dose fixe par âge',
+            nl: 'Acute (tonsillaire) faryngitis — eerste keuze, vaste dosis per leeftijd'
           },
-          mode: 'jour', unite: 'mg',
-          doseMin: 50, doseUsuelle: 50, doseMax: 50,
-          prises: [3, 2], maxJour: 2000,
+          mode: 'paliers', unite: 'mg', critere: 'age',
+          paliers: [
+            { label: { fr: 'Moins de 2 ans', nl: 'Jonger dan 2 jaar' }, min: 0, max: 23, dose: 375, prises: 3,
+              libelle: { fr: '125 mg 3×/j', nl: '125 mg 3×/dag' } },
+            { label: { fr: '2 à 10 ans', nl: '2 tot 10 jaar' }, min: 24, max: 131, dose: 750, prises: 3,
+              libelle: { fr: '250 mg 3×/j', nl: '250 mg 3×/dag' } },
+            { label: { fr: 'Plus de 10 ans et adulte', nl: 'Ouder dan 10 jaar en volwassene' }, min: 132, max: null, dose: 1500, prises: 3,
+              libelle: { fr: '500 mg 3×/j', nl: '500 mg 3×/dag' } }
+          ],
           duree: { fr: '7 jours', nl: '7 dagen' },
           note: {
-            fr: 'Premier choix BAPCOC quand un antibiotique est indiqué dans l’angine à streptocoque A.',
-            nl: 'Eerste keuze volgens BAPCOC wanneer een antibioticum aangewezen is bij groep A-streptokokkenkeelontsteking.'
+            fr: 'La pénicilline V (phénoxyméthylpénicilline) n’est plus commercialisée en Belgique depuis mai 2019 : la phénéticilline est la seule pénicilline orale à spectre étroit disponible. Dose fixe, indépendante du poids.',
+            nl: 'Penicilline V (fenoxymethylpenicilline) is sinds mei 2019 niet meer op de markt in België: feneticilline is de enige beschikbare orale smalspectrumpenicilline. Vaste dosis, onafhankelijk van het gewicht.'
           },
-          sources: [SRC_BAPCOC]
+          sources: [SRC_BAPCOC, SRC_CBIP]
         }
       ],
       precautions: [
-        { fr: 'À prendre à jeun (1 h avant ou 2 h après le repas).',
-          nl: 'Op een lege maag innemen (1 u voor of 2 u na de maaltijd).' }
+        { fr: 'La suspension orale pédiatrique n’est pas remboursée.',
+          nl: 'De pediatrische orale suspensie wordt niet terugbetaald.' },
+        { fr: 'Ne convient pas aux infections à pneumocoques (résistance trop fréquente).',
+          nl: 'Niet geschikt voor pneumokokkeninfecties (te frequente resistentie).' }
       ],
       contreIndications: [ALLERGIE_PENI],
-      sources: [SRC_BAPCOC]
+      sources: [SRC_BAPCOC, SRC_CBIP]
     },
 
     {
       id: 'azithromycine',
       dci: { fr: 'Azithromycine', nl: 'Azitromycine' },
-      marques: ['Zitromax', 'Azitromycine EG / Sandoz / Teva'],
+      marques: ['Zitromax', 'Azithromycine EG', 'Azithromycine Sandoz'],
       cbip: { fr: 'azithromycine', nl: 'azitromycine' },
       categorie: 'antibiotique',
       frequent: true,
-      verifie: false,
-      synonymes: ['macrolide', 'coqueluche', 'kinkhoest'],
+      verifie: true,
+      synonymes: ['macrolide', 'coqueluche', 'kinkhoest', 'allergie penicilline'],
       formes: [
         { id: 'susp200', nom: suspOrale(200), type: 'liquide', parMl: 40 },
         { id: 'cp250', nom: comprime('250 mg'), type: 'solide', parUnite: 250, uniteNom: U_CP },
@@ -337,12 +362,15 @@
       schemas: [
         {
           id: 'court3j',
-          indication: { fr: 'Schéma court (3 jours)', nl: 'Kort schema (3 dagen)' },
+          indication: {
+            fr: 'Alternative en cas d’allergie IgE aux pénicillines (pharyngite, otite, pneumonie atypique, impétigo, cellulite)',
+            nl: 'Alternatief bij IgE-allergie voor penicillines (faryngitis, otitis, atypische pneumonie, impetigo, cellulitis)'
+          },
           mode: 'jour', unite: 'mg',
           doseMin: 10, doseUsuelle: 10, doseMax: 10,
           prises: [1], maxJour: 500,
           duree: { fr: '3 jours', nl: '3 dagen' },
-          sources: [SRC_CBIP]
+          sources: [SRC_BAPCOC, SRC_CBIP]
         },
         {
           id: 'coqueluche',
@@ -350,10 +378,27 @@
           mode: 'jour', unite: 'mg',
           doseMin: 10, doseUsuelle: 10, doseMax: 10,
           prises: [1], maxJour: 500,
-          duree: { fr: '5 jours', nl: '5 dagen' },
+          ageMinMois: 1,
+          duree: { fr: '3 jours', nl: '3 dagen' },
           note: {
-            fr: 'Chez le nourrisson de moins de 6 mois : 10 mg/kg/j pendant 5 jours.',
-            nl: 'Bij zuigelingen jonger dan 6 maanden: 10 mg/kg/dag gedurende 5 dagen.'
+            fr: 'BAPCOC 2026 : 10 mg/kg en 1 prise (max. 500 mg) pendant 3 jours, à partir de 1 mois ; hors AMM avant 1 an. Pas de traitement antimicrobien chez l’enfant de plus de 1 an ni chez l’adulte, sauf pour protéger l’entourage à risque.',
+            nl: 'BAPCOC 2026: 10 mg/kg in 1 gift (max. 500 mg) gedurende 3 dagen, vanaf 1 maand; off-label onder 1 jaar. Geen antimicrobiële behandeling bij kinderen ouder dan 1 jaar of bij volwassenen, tenzij om risicopersonen in de omgeving te beschermen.'
+          },
+          sources: [SRC_BAPCOC]
+        },
+        {
+          id: 'lyme',
+          indication: {
+            fr: 'Érythème migrant en cas d’allergie aux pénicillines — dose de charge le 1er jour',
+            nl: 'Erythema migrans bij penicillineallergie — oplaaddosis op dag 1'
+          },
+          mode: 'jour', unite: 'mg',
+          doseMin: 10, doseUsuelle: 10, doseMax: 10,
+          prises: [1], maxJour: 500,
+          duree: { fr: '20 mg/kg le 1er jour, puis 10 mg/kg/j pendant 4 jours', nl: '20 mg/kg op dag 1, daarna 10 mg/kg/dag gedurende 4 dagen' },
+          note: {
+            fr: 'La dose affichée est celle des jours 2 à 5 ; le 1er jour, donner le double (max. 1 g).',
+            nl: 'De weergegeven dosis geldt voor dag 2 tot 5; geef op dag 1 het dubbele (max. 1 g).'
           },
           sources: [SRC_BAPCOC]
         }
@@ -366,12 +411,12 @@
     {
       id: 'clarithromycine',
       dci: { fr: 'Clarithromycine', nl: 'Claritromycine' },
-      marques: ['Biclar', 'Clarithromycine EG / Sandoz / Teva'],
+      marques: ['Biclar', 'Clarithromycine EG', 'Clarithromycine Sandoz', 'Clarithromycin KRKA'],
       cbip: { fr: 'clarithromycine', nl: 'claritromycine' },
       categorie: 'antibiotique',
       frequent: true,
-      verifie: false,
-      synonymes: ['macrolide', 'coqueluche', 'kinkhoest'],
+      verifie: true,
+      synonymes: ['macrolide', 'kinkhoest'],
       formes: [
         { id: 'susp125', nom: suspOrale(125), type: 'liquide', parMl: 25 },
         { id: 'susp250', nom: suspOrale(250), type: 'liquide', parMl: 50 },
@@ -382,14 +427,18 @@
         {
           id: 'standard',
           indication: {
-            fr: 'Infection respiratoire, coqueluche (alternative)',
-            nl: 'Luchtweginfectie, kinkhoest (alternatief)'
+            fr: 'Posologie pédiatrique générale (CBIP)',
+            nl: 'Algemene pediatrische posologie (BCFI)'
           },
           mode: 'jour', unite: 'mg',
           doseMin: 15, doseUsuelle: 15, doseMax: 15,
           prises: [2], maxJour: 1000,
-          duree: { fr: '7 jours (5 à 7 jours pour la coqueluche)', nl: '7 dagen (5 tot 7 dagen bij kinkhoest)' },
-          sources: [SRC_CBIP, SRC_BAPCOC]
+          duree: { fr: 'selon l’indication', nl: 'afhankelijk van de indicatie' },
+          note: {
+            fr: 'Le guide BAPCOC 2026 ne retient pas la clarithromycine chez l’enfant : l’azithromycine est le macrolide de premier choix en cas d’allergie aux pénicillines.',
+            nl: 'De BAPCOC-gids 2026 weerhoudt claritromycine niet bij kinderen: azitromycine is het macrolide van eerste keuze bij penicillineallergie.'
+          },
+          sources: [SRC_CBIP]
         }
       ],
       precautions: [
@@ -398,52 +447,61 @@
         QT_LONG
       ],
       contreIndications: [ALLERGIE_MACRO],
-      sources: [SRC_BAPCOC, SRC_CBIP]
+      sources: [SRC_CBIP]
     },
 
     {
       id: 'cefuroxime-axetil',
       dci: { fr: 'Céfuroxime axétil', nl: 'Cefuroxim axetil' },
-      marques: ['Zinnat', 'Céfuroxime EG / Sandoz'],
+      marques: ['Zinnat', 'Cefuroxime EG', 'Cefuroxim Sandoz'],
       cbip: { fr: 'céfuroxime', nl: 'cefuroxim' },
       categorie: 'antibiotique',
       frequent: false,
-      verifie: false,
-      synonymes: ['cephalosporine', 'C2G', 'cefalosporine'],
+      verifie: true,
+      synonymes: ['cephalosporine', 'C2G', 'cefalosporine', 'cystite', 'blaasontsteking'],
       formes: [
-        { id: 'susp125', nom: suspOrale(125), type: 'liquide', parMl: 25 },
+        { id: 'susp250', nom: suspOrale(250), type: 'liquide', parMl: 50 },
         { id: 'cp250', nom: comprime('250 mg'), type: 'solide', parUnite: 250, uniteNom: U_CP },
         { id: 'cp500', nom: comprime('500 mg'), type: 'solide', parUnite: 500, uniteNom: U_CP }
       ],
       schemas: [
         {
-          id: 'standard',
-          indication: { fr: 'Infection ORL / respiratoire (2e choix)', nl: 'KNO- / luchtweginfectie (tweede keuze)' },
+          id: 'cystite',
+          indication: {
+            fr: 'Cystite de l’enfant — 2e choix (pas en cas d’allergie IgE aux pénicillines)',
+            nl: 'Blaasontsteking bij het kind — tweede keuze (niet bij IgE-allergie voor penicillines)'
+          },
           mode: 'jour', unite: 'mg',
-          doseMin: 20, doseUsuelle: 30, doseMax: 30,
-          prises: [2], maxJour: 1000,
-          duree: { fr: 'selon l’indication', nl: 'afhankelijk van de indicatie' },
-          sources: [SRC_CBIP]
+          doseMin: 30, doseUsuelle: 30, doseMax: 30,
+          prises: [3], maxJour: 1500, maxPrise: 500,
+          duree: { fr: '5 jours', nl: '5 dagen' },
+          note: {
+            fr: '10 mg/kg 3×/j, maximum 3 × 500 mg/j. En raison de la faible biodisponibilité et de la demi-vie courte, cette posologie diffère de celle du RCP.',
+            nl: '10 mg/kg 3×/dag, maximaal 3 × 500 mg/dag. Wegens de lage biologische beschikbaarheid en de korte halfwaardetijd wijkt deze posologie af van die in de SKP.'
+          },
+          sources: [SRC_BAPCOC, SRC_CBIP]
         }
       ],
       precautions: [
         { fr: 'Goût très amer de la suspension : observance souvent médiocre chez le jeune enfant.',
           nl: 'Zeer bittere smaak van de suspensie: therapietrouw vaak moeilijk bij jonge kinderen.' },
-        { fr: 'À prendre pendant le repas (absorption).', nl: 'Innemen tijdens de maaltijd (absorptie).' }
+        { fr: 'À prendre pendant le repas (absorption).', nl: 'Innemen tijdens de maaltijd (absorptie).' },
+        { fr: 'Le céfuroxime axétil n’est plus recommandé par le BAPCOC 2026 dans l’otite ni la sinusite.',
+          nl: 'Cefuroxim axetil wordt door BAPCOC 2026 niet meer aanbevolen bij otitis of sinusitis.' }
       ],
       contreIndications: [ALLERGIE_BETA],
-      sources: [SRC_CBIP]
+      sources: [SRC_BAPCOC, SRC_CBIP]
     },
 
     {
       id: 'cefadroxil',
       dci: { fr: 'Céfadroxil', nl: 'Cefadroxil' },
-      marques: ['Duracef'],
+      marques: ['Duracef', 'Cefadroxil Sandoz'],
       cbip: { fr: 'céfadroxil', nl: 'cefadroxil' },
       categorie: 'antibiotique',
       frequent: false,
-      verifie: false,
-      synonymes: ['cephalosporine', 'C1G', 'cefalosporine'],
+      verifie: true,
+      synonymes: ['cephalosporine', 'C1G', 'cefalosporine', 'impetigo'],
       formes: [
         { id: 'susp250', nom: suspOrale(250), type: 'liquide', parMl: 50 },
         { id: 'susp500', nom: suspOrale(500), type: 'liquide', parMl: 100 },
@@ -451,21 +509,38 @@
       ],
       schemas: [
         {
-          id: 'standard',
+          id: 'pharyngite',
           indication: {
-            fr: 'Infection cutanée, angine (alternative en cas d’allergie non IgE)',
-            nl: 'Huidinfectie, keelontsteking (alternatief bij niet-IgE-allergie)'
+            fr: 'Pharyngite aiguë (amygdalienne) — alternative à la phénéticilline',
+            nl: 'Acute (tonsillaire) faryngitis — alternatief voor feneticilline'
           },
           mode: 'jour', unite: 'mg',
-          doseMin: 30, doseUsuelle: 30, doseMax: 50,
-          prises: [2], maxJour: 2000,
-          duree: { fr: 'selon l’indication', nl: 'afhankelijk van de indicatie' },
-          sources: [SRC_CBIP]
+          doseMin: 30, doseUsuelle: 30, doseMax: 30,
+          prises: [2], maxJour: 1000,
+          duree: { fr: '5 jours', nl: '5 dagen' },
+          note: {
+            fr: '15 mg/kg 2×/j ; adulte 500 mg 2×/j.',
+            nl: '15 mg/kg 2×/dag; volwassene 500 mg 2×/dag.'
+          },
+          sources: [SRC_BAPCOC, SRC_CBIP]
+        },
+        {
+          id: 'impetigo',
+          indication: { fr: 'Impétigo — alternative à la flucloxacilline', nl: 'Impetigo — alternatief voor flucloxacilline' },
+          mode: 'jour', unite: 'mg',
+          doseMin: 30, doseUsuelle: 30, doseMax: 30,
+          prises: [2, 3], maxJour: 2000,
+          duree: { fr: '7 jours', nl: '7 dagen' },
+          note: {
+            fr: 'Adulte : 1 g 2×/j.',
+            nl: 'Volwassene: 1 g 2×/dag.'
+          },
+          sources: [SRC_BAPCOC, SRC_CBIP]
         }
       ],
       precautions: [],
       contreIndications: [ALLERGIE_BETA],
-      sources: [SRC_CBIP]
+      sources: [SRC_BAPCOC, SRC_CBIP]
     },
 
     {
@@ -475,27 +550,35 @@
       cbip: { fr: 'flucloxacilline', nl: 'flucloxacilline' },
       categorie: 'antibiotique',
       frequent: false,
-      verifie: false,
-      synonymes: ['staphylocoque', 'impetigo', 'stafylokok'],
+      verifie: true,
+      synonymes: ['staphylocoque', 'impetigo', 'stafylokok', 'cellulite', 'erysipele', 'wondroos'],
       formes: [
-        { id: 'sirop125', nom: { fr: 'Sirop 125 mg / 5 ml', nl: 'Siroop 125 mg / 5 ml' }, type: 'liquide', parMl: 25 },
         { id: 'sirop250', nom: { fr: 'Sirop 250 mg / 5 ml', nl: 'Siroop 250 mg / 5 ml' }, type: 'liquide', parMl: 50 },
         { id: 'cp500', nom: gelule('500 mg'), type: 'solide', parUnite: 500, uniteNom: U_GEL, pasUnite: 1 }
       ],
       schemas: [
         {
           id: 'standard',
-          indication: { fr: 'Infection cutanée à staphylocoque', nl: 'Huidinfectie door stafylokokken' },
+          indication: {
+            fr: 'Impétigo étendu, cellulite et érysipèle — 1er choix',
+            nl: 'Uitgebreide impetigo, cellulitis en erysipelas — eerste keuze'
+          },
           mode: 'jour', unite: 'mg',
-          doseMin: 50, doseUsuelle: 50, doseMax: 100,
-          prises: [3, 4], maxJour: 4000,
-          duree: { fr: '7 à 10 jours', nl: '7 tot 10 dagen' },
+          doseMin: 25, doseUsuelle: 50, doseMax: 50,
+          prises: [3, 4], maxJour: 2000,
+          duree: { fr: '7 jours (impétigo) ou 10 jours (cellulite et érysipèle)', nl: '7 dagen (impetigo) of 10 dagen (cellulitis en erysipelas)' },
+          note: {
+            fr: 'Adulte : 1 à 2 g/j en 3 ou 4 prises (impétigo), 2 g/j en 4 prises (cellulite et érysipèle).',
+            nl: 'Volwassene: 1 tot 2 g/dag in 3 of 4 giften (impetigo), 2 g/dag in 4 giften (cellulitis en erysipelas).'
+          },
           sources: [SRC_BAPCOC, SRC_CBIP]
         }
       ],
       precautions: [
         { fr: 'À prendre à jeun (1 h avant le repas).', nl: 'Op een lege maag innemen (1 u voor de maaltijd).' },
-        { fr: 'Hépatotoxicité rare mais décrite.', nl: 'Zeldzame maar beschreven levertoxiciteit.' }
+        { fr: 'Hépatotoxicité rare mais décrite.', nl: 'Zeldzame maar beschreven levertoxiciteit.' },
+        { fr: 'Hospitaliser l’enfant de moins de 3 ans atteint de cellulite ou d’érysipèle.',
+          nl: 'Hospitaliseer kinderen jonger dan 3 jaar met cellulitis of erysipelas.' }
       ],
       contreIndications: [ALLERGIE_PENI],
       sources: [SRC_BAPCOC, SRC_CBIP]
@@ -507,15 +590,15 @@
         fr: 'Sulfaméthoxazole + triméthoprime (cotrimoxazole)',
         nl: 'Sulfamethoxazol + trimethoprim (cotrimoxazol)'
       },
-      marques: ['Bactrim', 'Eusaprim', 'Docotrim'],
+      marques: ['Bactrim Forte', 'Eusaprim'],
       cbip: { fr: 'cotrimoxazole', nl: 'cotrimoxazol' },
       categorie: 'antibiotique',
       frequent: false,
-      verifie: false,
-      synonymes: ['bactrim', 'infection urinaire', 'cystite', 'urineweginfectie', 'blaasontsteking'],
+      verifie: true,
+      synonymes: ['bactrim', 'eusaprim', 'otite', 'sinusite', 'morsure', 'kinkhoest', 'beet'],
       doseExprimee: {
-        fr: 'Les doses sont exprimées en sulfaméthoxazole (SMX).',
-        nl: 'De doses zijn uitgedrukt in sulfamethoxazol (SMX).'
+        fr: 'Les doses sont exprimées en sulfaméthoxazole (SMX) ; 30 mg/kg/j de SMX = 6 mg/kg/j de triméthoprime.',
+        nl: 'De doses zijn uitgedrukt in sulfamethoxazol (SMX); 30 mg/kg/dag SMX = 6 mg/kg/dag trimethoprim.'
       },
       formes: [
         { id: 'sirop', nom: { fr: 'Suspension 200 mg SMX / 40 mg TMP par 5 ml', nl: 'Suspensie 200 mg SMX / 40 mg TMP per 5 ml' }, type: 'liquide', parMl: 40 },
@@ -523,18 +606,47 @@
       ],
       schemas: [
         {
-          id: 'urinaire',
-          indication: { fr: 'Infection urinaire', nl: 'Urineweginfectie' },
+          id: 'orl',
+          indication: {
+            fr: 'Otite moyenne aiguë ou rhinosinusite avec allergie IgE aux pénicillines',
+            nl: 'Acute middenoorontsteking of rinosinusitis bij IgE-allergie voor penicillines'
+          },
           mode: 'jour', unite: 'mg',
           doseMin: 30, doseUsuelle: 30, doseMax: 30,
           prises: [2], maxJour: 1600,
-          ageMinMois: 1.5,
-          duree: { fr: '3 à 7 jours', nl: '3 tot 7 dagen' },
+          ageMinMois: 1,
+          duree: { fr: '5 jours', nl: '5 dagen' },
           note: {
-            fr: 'Équivaut à 6 mg/kg/j de triméthoprime.',
-            nl: 'Komt overeen met 6 mg/kg/dag trimethoprim.'
+            fr: 'Orienter vers un traitement intraveineux l’enfant gravement malade allergique aux pénicillines (résistance croissante).',
+            nl: 'Verwijs een ernstig ziek kind met penicillineallergie door voor intraveneuze behandeling (toenemende resistentie).'
           },
-          sources: [SRC_BAPCOC, SRC_CBIP]
+          sources: [SRC_BAPCOC]
+        },
+        {
+          id: 'morsure',
+          indication: {
+            fr: 'Morsure avec allergie IgE aux pénicillines (à associer à la clindamycine)',
+            nl: 'Beet bij IgE-allergie voor penicillines (te combineren met clindamycine)'
+          },
+          mode: 'jour', unite: 'mg',
+          doseMin: 30, doseUsuelle: 30, doseMax: 30,
+          prises: [2], maxJour: 1600,
+          ageMinMois: 1,
+          duree: { fr: '5 jours (prophylaxie) ou 7 jours (infection)', nl: '5 dagen (profylaxe) of 7 dagen (infectie)' },
+          sources: [SRC_BAPCOC]
+        },
+        {
+          id: 'coqueluche',
+          indication: {
+            fr: 'Coqueluche en cas d’hypersensibilité à l’azithromycine',
+            nl: 'Kinkhoest bij overgevoeligheid voor azitromycine'
+          },
+          mode: 'jour', unite: 'mg',
+          doseMin: 30, doseUsuelle: 30, doseMax: 30,
+          prises: [2], maxJour: 1600,
+          ageMinMois: 1,
+          duree: { fr: '14 jours', nl: '14 dagen' },
+          sources: [SRC_BAPCOC]
         }
       ],
       precautions: [
@@ -543,7 +655,7 @@
           nl: 'Controle van de nierfunctie bij langdurige behandeling.' }
       ],
       contreIndications: [
-        { fr: 'Nourrisson de moins de 6 semaines.', nl: 'Zuigeling jonger dan 6 weken.' },
+        { fr: 'Nourrisson de moins de 1 mois.', nl: 'Zuigeling jonger dan 1 maand.' },
         { fr: 'Déficit en G6PD.', nl: 'G6PD-deficiëntie.' },
         { fr: 'Allergie aux sulfamides.', nl: 'Allergie voor sulfamiden.' }
       ],
@@ -557,7 +669,7 @@
       cbip: { fr: 'nitrofurantoïne', nl: 'nitrofurantoïne' },
       categorie: 'antibiotique',
       frequent: false,
-      verifie: false,
+      verifie: true,
       synonymes: ['cystite', 'infection urinaire', 'blaasontsteking', 'urineweginfectie'],
       formes: [
         { id: 'gel50', nom: gelule('50 mg'), type: 'solide', parUnite: 50, uniteNom: U_GEL, pasUnite: 1 },
@@ -566,26 +678,28 @@
       schemas: [
         {
           id: 'cystite',
-          indication: { fr: 'Cystite non compliquée', nl: 'Ongecompliceerde blaasontsteking' },
+          indication: { fr: 'Cystite de l’enfant de moins de 12 ans — 1er choix', nl: 'Blaasontsteking bij het kind jonger dan 12 jaar — eerste keuze' },
           mode: 'jour', unite: 'mg',
-          doseMin: 5, doseUsuelle: 5, doseMax: 7,
-          prises: [3, 4], maxJour: 400,
+          doseMin: 5, doseUsuelle: 5, doseMax: 6,
+          prises: [4], maxJour: 300,
           ageMinMois: 1,
-          duree: { fr: '5 à 7 jours', nl: '5 tot 7 dagen' },
+          duree: { fr: '5 jours', nl: '5 dagen' },
           note: {
-            fr: 'Pas de forme liquide en Belgique : peu praticable chez le jeune enfant.',
-            nl: 'Geen vloeibare vorm in België: weinig bruikbaar bij jonge kinderen.'
+            fr: 'Chez l’enfant, la dose s’obtient par préparation magistrale (suspension pédiatrique 30 mg/5 ml FTM, ou gélules de 10 à 50 mg) : les gélules commercialisées de 50 et 100 mg sont trop dosées pour la plupart des enfants. Adulte : 100 mg 3×/j.',
+            nl: 'Bij kinderen wordt de dosis bereid als magistrale bereiding (pediatrische suspensie 30 mg/5 ml FTM, of capsules van 10 tot 50 mg): de in de handel verkrijgbare capsules van 50 en 100 mg zijn voor de meeste kinderen te hoog gedoseerd. Volwassene: 100 mg 3×/dag.'
           },
           sources: [SRC_BAPCOC, SRC_CBIP]
         }
       ],
       precautions: [
         { fr: 'À prendre pendant le repas.', nl: 'Innemen tijdens de maaltijd.' },
-        { fr: 'Colore les urines en brun.', nl: 'Kleurt de urine bruin.' }
+        { fr: 'Colore les urines en brun.', nl: 'Kleurt de urine bruin.' },
+        { fr: 'Sauf première cystite chez une fille de plus de 5 ans, tout enfant avec une infection urinaire doit être adressé pour exclure une anomalie des voies urinaires.',
+          nl: 'Behalve bij een eerste blaasontsteking bij een meisje ouder dan 5 jaar moet elk kind met een urineweginfectie worden doorverwezen om een afwijking van de urinewegen uit te sluiten.' }
       ],
       contreIndications: [
         { fr: 'Nourrisson de moins de 1 mois.', nl: 'Zuigeling jonger dan 1 maand.' },
-        { fr: 'Insuffisance rénale.', nl: 'Nierinsufficiëntie.' },
+        { fr: 'Insuffisance rénale sévère.', nl: 'Ernstige nierinsufficiëntie.' },
         { fr: 'Déficit en G6PD.', nl: 'G6PD-deficiëntie.' }
       ],
       sources: [SRC_BAPCOC, SRC_CBIP]
@@ -594,15 +708,13 @@
     {
       id: 'metronidazole',
       dci: { fr: 'Métronidazole', nl: 'Metronidazol' },
-      marques: ['Flagyl', 'Docmetro'],
+      marques: ['Flagyl'],
       cbip: { fr: 'métronidazole', nl: 'metronidazol' },
       categorie: 'antibiotique',
       frequent: false,
       verifie: false,
       synonymes: ['anaerobie', 'giardia', 'lambliase', 'anaeroob', 'giardiasis'],
       formes: [
-        { id: 'susp', nom: suspOrale(200), type: 'liquide', parMl: 40 },
-        { id: 'cp250', nom: comprime('250 mg'), type: 'solide', parUnite: 250, uniteNom: U_CP },
         { id: 'cp500', nom: comprime('500 mg'), type: 'solide', parUnite: 500, uniteNom: U_CP }
       ],
       schemas: [
@@ -613,6 +725,10 @@
           doseMin: 20, doseUsuelle: 25, doseMax: 30,
           prises: [3], maxJour: 1500,
           duree: { fr: '7 jours', nl: '7 dagen' },
+          note: {
+            fr: 'Dose adulte confirmée (500 mg 3×/j pendant 7 jours). La dose pédiatrique en mg/kg n’est PAS reprise par le CBIP ni par le BAPCOC : à contrôler dans le RCP avant prescription.',
+            nl: 'Volwassendosis bevestigd (500 mg 3×/dag gedurende 7 dagen). De pediatrische dosis in mg/kg staat NIET in het BCFI noch in de BAPCOC-gids: te controleren in de SKP vóór voorschrijven.'
+          },
           sources: [SRC_CBIP]
         },
         {
@@ -620,15 +736,21 @@
           indication: { fr: 'Giardiase (lambliase)', nl: 'Giardiasis (lambliasis)' },
           mode: 'jour', unite: 'mg',
           doseMin: 15, doseUsuelle: 15, doseMax: 20,
-          prises: [3], maxJour: 750,
-          duree: { fr: '5 à 7 jours', nl: '5 tot 7 dagen' },
+          prises: [3, 2], maxJour: 1000,
+          duree: { fr: '7 à 10 jours', nl: '7 tot 10 dagen' },
+          note: {
+            fr: 'Dose adulte confirmée (500 mg 2×/j pendant 7 à 10 jours, ou 2 g 1×/j pendant 3 jours). La dose pédiatrique en mg/kg n’est PAS reprise par le CBIP : à contrôler dans le RCP.',
+            nl: 'Volwassendosis bevestigd (500 mg 2×/dag gedurende 7 tot 10 dagen, of 2 g 1×/dag gedurende 3 dagen). De pediatrische dosis in mg/kg staat NIET in het BCFI: te controleren in de SKP.'
+          },
           sources: [SRC_CBIP]
         }
       ],
       precautions: [
         { fr: 'Effet antabuse : pas d’alcool (formes destinées aux adolescents).',
           nl: 'Antabuseffect: geen alcohol (vormen voor adolescenten).' },
-        { fr: 'Goût métallique.', nl: 'Metaalsmaak.' }
+        { fr: 'Goût métallique.', nl: 'Metaalsmaak.' },
+        { fr: 'Aucune suspension orale ni comprimé de 250 mg n’est commercialisé en Belgique : seul le comprimé de 500 mg existe, d’où la nécessité d’une préparation magistrale chez le jeune enfant.',
+          nl: 'In België is geen orale suspensie noch tablet van 250 mg op de markt: enkel de tablet van 500 mg bestaat, vandaar de noodzaak van een magistrale bereiding bij jonge kinderen.' }
       ],
       contreIndications: [],
       sources: [SRC_CBIP]
@@ -637,70 +759,81 @@
     {
       id: 'clindamycine',
       dci: { fr: 'Clindamycine', nl: 'Clindamycine' },
-      marques: ['Dalacin C', 'Clindamycine EG / Sandoz'],
+      marques: ['Dalacin C'],
       cbip: { fr: 'clindamycine', nl: 'clindamycine' },
       categorie: 'antibiotique',
       frequent: false,
-      verifie: false,
-      synonymes: ['lincosamide'],
+      verifie: true,
+      synonymes: ['lincosamide', 'morsure', 'impetigo', 'beet'],
       formes: [
         { id: 'gel150', nom: gelule('150 mg'), type: 'solide', parUnite: 150, uniteNom: U_GEL, pasUnite: 1 },
         { id: 'gel300', nom: gelule('300 mg'), type: 'solide', parUnite: 300, uniteNom: U_GEL, pasUnite: 1 }
       ],
       schemas: [
         {
-          id: 'standard',
+          id: 'peau',
           indication: {
-            fr: 'Infection cutanée / osseuse (alternative en cas d’allergie)',
-            nl: 'Huid- / botinfectie (alternatief bij allergie)'
+            fr: 'Impétigo, cellulite ou érysipèle avec allergie IgE aux pénicillines',
+            nl: 'Impetigo, cellulitis of erysipelas bij IgE-allergie voor penicillines'
           },
           mode: 'jour', unite: 'mg',
-          doseMin: 20, doseUsuelle: 25, doseMax: 30,
+          doseMin: 20, doseUsuelle: 20, doseMax: 20,
           prises: [3, 4], maxJour: 1800,
-          duree: { fr: 'selon l’indication', nl: 'afhankelijk van de indicatie' },
-          note: {
-            fr: 'Pas de forme liquide commercialisée en Belgique.',
-            nl: 'Geen vloeibare vorm op de markt in België.'
+          duree: { fr: '7 jours (impétigo) ou 10 jours (cellulite et érysipèle)', nl: '7 dagen (impetigo) of 10 dagen (cellulitis en erysipelas)' },
+          sources: [SRC_BAPCOC]
+        },
+        {
+          id: 'morsure',
+          indication: {
+            fr: 'Morsure avec allergie IgE aux pénicillines (à associer au cotrimoxazole)',
+            nl: 'Beet bij IgE-allergie voor penicillines (te combineren met cotrimoxazol)'
           },
-          sources: [SRC_CBIP]
+          mode: 'jour', unite: 'mg',
+          doseMin: 25, doseUsuelle: 25, doseMax: 25,
+          prises: [3, 4], maxJour: 1800,
+          duree: { fr: '5 jours (prophylaxie) ou 7 jours (infection)', nl: '5 dagen (profylaxe) of 7 dagen (infectie)' },
+          sources: [SRC_BAPCOC]
         }
       ],
       precautions: [
-        { fr: 'Risque de colite à Clostridioides difficile.', nl: 'Risico op Clostridioides difficile-colitis.' }
+        { fr: 'Risque de colite à Clostridioides difficile.', nl: 'Risico op Clostridioides difficile-colitis.' },
+        { fr: 'Pas de forme liquide commercialisée en Belgique : la plus petite gélule contient 150 mg.',
+          nl: 'Geen vloeibare vorm op de markt in België: de kleinste capsule bevat 150 mg.' }
       ],
       contreIndications: [],
-      sources: [SRC_CBIP]
+      sources: [SRC_BAPCOC, SRC_CBIP]
     },
 
     {
       id: 'doxycycline',
       dci: { fr: 'Doxycycline', nl: 'Doxycycline' },
-      marques: ['Vibratab', 'Doxytab', 'Doxycycline EG'],
+      marques: ['Vibratab', 'Doxycycline EG', 'Doxycycline Sandoz'],
       cbip: { fr: 'doxycycline', nl: 'doxycycline' },
       categorie: 'antibiotique',
       frequent: false,
-      verifie: false,
-      synonymes: ['tetracycline', 'lyme', 'borreliose', 'ziekte van lyme'],
+      verifie: true,
+      synonymes: ['tetracycline', 'lyme', 'borreliose', 'ziekte van lyme', 'teek'],
       formes: [
-        { id: 'cp100', nom: comprime('100 mg'), type: 'solide', parUnite: 100, uniteNom: U_CP }
+        { id: 'cp100', nom: comprime('100 mg'), type: 'solide', parUnite: 100, uniteNom: U_CP },
+        { id: 'cp200', nom: comprime('200 mg'), type: 'solide', parUnite: 200, uniteNom: U_CP }
       ],
       schemas: [
         {
-          id: 'standard',
+          id: 'lyme',
           indication: {
-            fr: 'Borréliose de Lyme, pneumonie atypique (à partir de 8 ans)',
-            nl: 'Ziekte van Lyme, atypische pneumonie (vanaf 8 jaar)'
+            fr: 'Érythème migrant (maladie de Lyme) — 1er choix à partir de 8 ans',
+            nl: 'Erythema migrans (ziekte van Lyme) — eerste keuze vanaf 8 jaar'
           },
           mode: 'jour', unite: 'mg',
           doseMin: 4, doseUsuelle: 4, doseMax: 4,
-          prises: [2, 1], maxJour: 200,
+          prises: [2], maxJour: 200, maxPrise: 100,
           ageMinMois: 96,
-          duree: { fr: '10 à 21 jours selon l’indication', nl: '10 tot 21 dagen afhankelijk van de indicatie' },
+          duree: { fr: '10 jours', nl: '10 dagen' },
           note: {
-            fr: 'Dose de charge possible le 1er jour selon l’indication.',
-            nl: 'Oplaaddosis mogelijk op dag 1 afhankelijk van de indicatie.'
+            fr: 'Maximum 100 mg par prise. Pas d’antibioprophylaxie après une morsure de tique : ne traiter qu’à l’apparition de l’érythème migrant.',
+            nl: 'Maximaal 100 mg per gift. Geen antibioticaprofylaxe na een tekenbeet: pas behandelen bij het verschijnen van erythema migrans.'
           },
-          sources: [SRC_BAPCOC, SRC_CBIP]
+          sources: [SRC_BAPCOC]
         }
       ],
       precautions: [
@@ -720,18 +853,22 @@
     {
       id: 'paracetamol',
       dci: { fr: 'Paracétamol', nl: 'Paracetamol' },
-      marques: ['Perdolan', 'Dafalgan', 'Panadol', 'Paracetamol EG / Sandoz / Teva'],
+      marques: ['Perdolan', 'Dafalgan', 'Panadol', 'Algostase Mono', 'Paracetamol EG', 'Paracetamol AB'],
       cbip: { fr: 'paracétamol', nl: 'paracetamol' },
       categorie: 'antalgique',
       frequent: true,
-      verifie: false,
+      verifie: true,
       synonymes: ['fievre', 'acetaminophene', 'douleur', 'koorts', 'pijn'],
       formes: [
-        { id: 'sirop30', nom: { fr: 'Sirop pédiatrique 30 mg / ml', nl: 'Pediatrische siroop 30 mg / ml' }, type: 'liquide', parMl: 30 },
-        { id: 'sirop24', nom: { fr: 'Sirop 120 mg / 5 ml (24 mg/ml)', nl: 'Siroop 120 mg / 5 ml (24 mg/ml)' }, type: 'liquide', parMl: 24 },
+        { id: 'sirop30', nom: { fr: 'Sirop pédiatrique 30 mg / ml (Dafalgan)', nl: 'Pediatrische siroop 30 mg / ml (Dafalgan)' }, type: 'liquide', parMl: 30 },
+        { id: 'sirop32', nom: { fr: 'Sirop enfants 32 mg / ml (Perdolan)', nl: 'Siroop voor kinderen 32 mg / ml (Perdolan)' }, type: 'liquide', parMl: 32 },
+        { id: 'suppo80', nom: { fr: 'Suppositoire 80 mg', nl: 'Zetpil 80 mg' }, type: 'suppo', parUnite: 80, uniteNom: U_SUPPO },
         { id: 'suppo100', nom: { fr: 'Suppositoire 100 mg', nl: 'Zetpil 100 mg' }, type: 'suppo', parUnite: 100, uniteNom: U_SUPPO },
+        { id: 'suppo150', nom: { fr: 'Suppositoire 150 mg', nl: 'Zetpil 150 mg' }, type: 'suppo', parUnite: 150, uniteNom: U_SUPPO },
         { id: 'suppo200', nom: { fr: 'Suppositoire 200 mg', nl: 'Zetpil 200 mg' }, type: 'suppo', parUnite: 200, uniteNom: U_SUPPO },
         { id: 'suppo300', nom: { fr: 'Suppositoire 300 mg', nl: 'Zetpil 300 mg' }, type: 'suppo', parUnite: 300, uniteNom: U_SUPPO },
+        { id: 'suppo350', nom: { fr: 'Suppositoire 350 mg', nl: 'Zetpil 350 mg' }, type: 'suppo', parUnite: 350, uniteNom: U_SUPPO },
+        { id: 'sachet250', nom: { fr: 'Granulés 250 mg (sachet)', nl: 'Granulaat 250 mg (zakje)' }, type: 'sachet', parUnite: 250, uniteNom: U_SACHET },
         { id: 'cp500', nom: comprime('500 mg'), type: 'solide', parUnite: 500, uniteNom: U_CP }
       ],
       schemas: [
@@ -739,24 +876,28 @@
           id: 'standard',
           indication: { fr: 'Fièvre / douleur', nl: 'Koorts / pijn' },
           mode: 'prise', unite: 'mg',
-          doseMin: 10, doseUsuelle: 15, doseMax: 15,
+          doseMin: 15, doseUsuelle: 15, doseMax: 15,
           prises: [4, 3], maxJour: 4000, maxPrise: 1000,
           maxParKgJour: 60,
           duree: { fr: 'selon les symptômes', nl: 'afhankelijk van de symptomen' },
           note: {
-            fr: '15 mg/kg toutes les 6 h ou 10 mg/kg toutes les 4 h. Maximum 60 mg/kg/j.',
-            nl: '15 mg/kg om de 6 u of 10 mg/kg om de 4 u. Maximum 60 mg/kg/dag.'
+            fr: 'CBIP : enfant et adulte de moins de 50 kg : 15 mg/kg jusqu’à 4×/jour, maximum 60 mg/kg/jour. Adulte d’au moins 50 kg : 500 mg à 1 g jusqu’à 4×/jour (max. 4 g/jour), ramené à 3 g/jour en présence de facteurs de risque.',
+            nl: 'BCFI: kind en volwassene onder 50 kg: 15 mg/kg tot 4×/dag, maximaal 60 mg/kg/dag. Volwassene van minstens 50 kg: 500 mg tot 1 g tot 4×/dag (max. 4 g/dag), teruggebracht tot 3 g/dag bij risicofactoren.'
           },
           sources: [SRC_CBIP]
         }
       ],
       precautions: [
-        { fr: 'Premier choix contre la fièvre chez l’enfant (CBIP).', nl: 'Eerste keuze bij koorts bij kinderen (BCFI).' },
+        { fr: 'Premier choix contre la fièvre et la douleur chez l’enfant (CBIP).', nl: 'Eerste keuze bij koorts en pijn bij kinderen (BCFI).' },
+        { fr: 'L’absorption par voie rectale est inconstante : la voie orale est à préférer, y compris chez le nourrisson.',
+          nl: 'De rectale absorptie is wisselvallig: de orale weg verdient de voorkeur, ook bij zuigelingen.' },
         { fr: 'Attention au cumul avec les spécialités combinées contenant du paracétamol.',
-          nl: 'Let op cumulatie met combinatiepreparaten die paracetamol bevatten.' }
+          nl: 'Let op cumulatie met combinatiepreparaten die paracetamol bevatten.' },
+        { fr: 'Seuil de toxicité hépatique abaissé chez l’enfant : une toxicité apparaît dès 150 mg/kg.',
+          nl: 'Verlaagde drempel voor levertoxiciteit bij kinderen: toxiciteit treedt al op vanaf 150 mg/kg.' }
       ],
       contreIndications: [
-        { fr: 'Insuffisance hépatique sévère.', nl: 'Ernstige leverinsufficiëntie.' }
+        { fr: 'Insuffisance hépatique sévère, insuffisance rénale sévère.', nl: 'Ernstige leverinsufficiëntie, ernstige nierinsufficiëntie.' }
       ],
       sources: [SRC_CBIP]
     },
@@ -764,31 +905,33 @@
     {
       id: 'ibuprofene',
       dci: { fr: 'Ibuprofène', nl: 'Ibuprofen' },
-      marques: ['Nurofen', 'Junifen', 'Brufen', 'Ibuprofen EG / Sandoz / Teva'],
+      marques: ['Nurofen', 'Brufen', 'Algidrin', 'Ibuprofen EG', 'Ibuprofen Sandoz', 'Ibuprofen AB'],
       cbip: { fr: 'ibuprofène', nl: 'ibuprofen' },
       categorie: 'antalgique',
       frequent: true,
-      verifie: false,
+      verifie: true,
       synonymes: ['AINS', 'fievre', 'douleur', 'NSAID', 'koorts', 'pijn'],
       formes: [
-        { id: 'sirop20', nom: { fr: 'Suspension 100 mg / 5 ml (20 mg/ml)', nl: 'Suspensie 100 mg / 5 ml (20 mg/ml)' }, type: 'liquide', parMl: 20 },
-        { id: 'sirop40', nom: { fr: 'Suspension 200 mg / 5 ml (40 mg/ml)', nl: 'Suspensie 200 mg / 5 ml (40 mg/ml)' }, type: 'liquide', parMl: 40 },
+        { id: 'sirop20', nom: { fr: 'Suspension 100 mg / 5 ml (20 mg/ml, 2 %)', nl: 'Suspensie 100 mg / 5 ml (20 mg/ml, 2 %)' }, type: 'liquide', parMl: 20 },
+        { id: 'sirop40', nom: { fr: 'Suspension 200 mg / 5 ml (40 mg/ml, 4 %)', nl: 'Suspensie 200 mg / 5 ml (40 mg/ml, 4 %)' }, type: 'liquide', parMl: 40 },
+        { id: 'suppo60', nom: { fr: 'Suppositoire 60 mg', nl: 'Zetpil 60 mg' }, type: 'suppo', parUnite: 60, uniteNom: U_SUPPO },
+        { id: 'suppo125', nom: { fr: 'Suppositoire 125 mg', nl: 'Zetpil 125 mg' }, type: 'suppo', parUnite: 125, uniteNom: U_SUPPO },
         { id: 'cp200', nom: comprime('200 mg'), type: 'solide', parUnite: 200, uniteNom: U_CP },
         { id: 'cp400', nom: comprime('400 mg'), type: 'solide', parUnite: 400, uniteNom: U_CP }
       ],
       schemas: [
         {
           id: 'standard',
-          indication: { fr: 'Fièvre / douleur', nl: 'Koorts / pijn' },
+          indication: { fr: 'Fièvre / douleur / inflammation', nl: 'Koorts / pijn / ontsteking' },
           mode: 'prise', unite: 'mg',
-          doseMin: 5, doseUsuelle: 10, doseMax: 10,
+          doseMin: 7, doseUsuelle: 10, doseMax: 10,
           prises: [3, 4], maxJour: 1200, maxPrise: 400,
           maxParKgJour: 30,
           ageMinMois: 3, poidsMinKg: 5,
           duree: { fr: 'le plus court possible', nl: 'zo kort mogelijk' },
           note: {
-            fr: 'Maximum 10 mg/kg par prise et 30 mg/kg/j.',
-            nl: 'Maximum 10 mg/kg per inname en 30 mg/kg/dag.'
+            fr: 'CBIP : enfant de plus de 3 mois : 7 à 10 mg/kg 3 à 4×/jour (max. 30 mg/kg/jour, max. 400 mg 4×/jour). Adulte d’au moins 40 kg, douleur et fièvre : 200 à 400 mg 3×/jour, maximum 1,2 g/jour.',
+            nl: 'BCFI: kind ouder dan 3 maanden: 7 tot 10 mg/kg 3 tot 4×/dag (max. 30 mg/kg/dag, max. 400 mg 4×/dag). Volwassene van minstens 40 kg, pijn en koorts: 200 tot 400 mg 3×/dag, maximaal 1,2 g/dag.'
           },
           sources: [SRC_CBIP]
         }
@@ -812,39 +955,6 @@
     /* CORTICOÏDES                                                    */
     /* ============================================================== */
     {
-      id: 'prednisolone',
-      dci: { fr: 'Prednisolone', nl: 'Prednisolon' },
-      marques: ['Prednisolone EG', 'Solupred (disponibilité à vérifier)'],
-      cbip: { fr: 'prednisolone', nl: 'prednisolon' },
-      categorie: 'corticoide',
-      frequent: true,
-      verifie: false,
-      synonymes: ['corticoide', 'asthme', 'crise', 'astma', 'corticosteroid'],
-      formes: [
-        { id: 'cp5', nom: comprime('5 mg'), type: 'solide', parUnite: 5, uniteNom: U_CP },
-        { id: 'cp20', nom: comprime('20 mg'), type: 'solide', parUnite: 20, uniteNom: U_CP }
-      ],
-      schemas: [
-        {
-          id: 'asthme',
-          indication: { fr: 'Exacerbation d’asthme', nl: 'Astma-exacerbatie' },
-          mode: 'jour', unite: 'mg',
-          doseMin: 1, doseUsuelle: 1, doseMax: 2,
-          prises: [1], maxJour: 40,
-          duree: { fr: '3 à 5 jours', nl: '3 tot 5 dagen' },
-          note: {
-            fr: 'Pas de décroissance nécessaire pour une cure courte.',
-            nl: 'Geen afbouw nodig bij een korte kuur.'
-          },
-          sources: [SRC_CBIP]
-        }
-      ],
-      precautions: [{ fr: 'À prendre le matin.', nl: '’s Ochtends innemen.' }],
-      contreIndications: [{ fr: 'Infection non contrôlée.', nl: 'Niet-gecontroleerde infectie.' }],
-      sources: [SRC_CBIP]
-    },
-
-    {
       id: 'methylprednisolone',
       dci: { fr: 'Méthylprednisolone', nl: 'Methylprednisolon' },
       marques: ['Medrol'],
@@ -852,11 +962,11 @@
       categorie: 'corticoide',
       frequent: true,
       verifie: false,
-      synonymes: ['medrol', 'corticoide', 'corticosteroid'],
+      synonymes: ['medrol', 'corticoide', 'corticosteroid', 'asthme', 'astma'],
       formes: [
-        { id: 'cp4', nom: comprime('4 mg'), type: 'solide', parUnite: 4, uniteNom: U_CP },
-        { id: 'cp16', nom: comprime('16 mg'), type: 'solide', parUnite: 16, uniteNom: U_CP },
-        { id: 'cp32', nom: comprime('32 mg'), type: 'solide', parUnite: 32, uniteNom: U_CP }
+        { id: 'cp4', nom: comprime('4 mg'), type: 'solide', parUnite: 4, uniteNom: U_CP, pasUnite: 0.25 },
+        { id: 'cp16', nom: comprime('16 mg'), type: 'solide', parUnite: 16, uniteNom: U_CP, pasUnite: 0.25 },
+        { id: 'cp32', nom: comprime('32 mg'), type: 'solide', parUnite: 32, uniteNom: U_CP, pasUnite: 0.25 }
       ],
       schemas: [
         {
@@ -867,36 +977,80 @@
           prises: [1], maxJour: 32,
           duree: { fr: '3 à 5 jours', nl: '3 tot 5 dagen' },
           note: {
-            fr: '4 mg de méthylprednisolone ≈ 5 mg de prednisolone.',
-            nl: '4 mg methylprednisolon ≈ 5 mg prednisolon.'
+            fr: 'ATTENTION : le CBIP ne donne PAS de dose pédiatrique en mg/kg pour les corticoïdes systémiques ; la dose affichée n’a pas pu être confirmée contre une source primaire belge. Dose adulte confirmée : 30 à 40 mg de (méthyl)prednisolone par jour pendant environ 7 jours en cas d’exacerbation sévère. Équivalence confirmée : 4 mg de méthylprednisolone ≈ 5 mg de prednisolone ≈ 20 mg d’hydrocortisone.',
+            nl: 'OPGELET: het BCFI geeft GEEN pediatrische dosis in mg/kg voor systemische corticosteroïden; de weergegeven dosis kon niet tegen een Belgische primaire bron worden bevestigd. Bevestigde volwassendosis: 30 tot 40 mg (methyl)prednisolon per dag gedurende ongeveer 7 dagen bij een ernstige exacerbatie. Bevestigde equivalentie: 4 mg methylprednisolon ≈ 5 mg prednisolon ≈ 20 mg hydrocortison.'
           },
           sources: [SRC_CBIP]
         }
       ],
-      precautions: [{ fr: 'À prendre le matin.', nl: '’s Ochtends innemen.' }],
-      contreIndications: [{ fr: 'Infection non contrôlée.', nl: 'Niet-gecontroleerde infectie.' }],
+      precautions: [
+        { fr: 'À prendre le matin, ce qui respecte mieux le rythme circadien de la cortisolémie.', nl: '’s Ochtends innemen, wat het circadiane ritme van het cortisol beter respecteert.' },
+        { fr: 'Le comprimé est quadrisécable (sécabilité non quantitative).', nl: 'De tablet is in vier deelbaar (niet-kwantitatieve deelbaarheid).' },
+        { fr: 'La méthylprednisolone remplace en pratique la prednisolone, qui n’a plus de spécialité en Belgique.',
+          nl: 'Methylprednisolon vervangt in de praktijk prednisolon, waarvoor in België geen specialiteit meer bestaat.' }
+      ],
+      contreIndications: [
+        { fr: 'Infection systémique non traitée.', nl: 'Onbehandelde systemische infectie.' }
+      ],
+      sources: [SRC_CBIP]
+    },
+
+    {
+      id: 'prednisolone',
+      dci: { fr: 'Prednisolone', nl: 'Prednisolon' },
+      marques: ['Aucune spécialité en Belgique — préparation magistrale uniquement'],
+      cbip: { fr: 'prednisolone', nl: 'prednisolon' },
+      categorie: 'corticoide',
+      frequent: false,
+      verifie: false,
+      synonymes: ['corticoide', 'asthme', 'crise', 'astma', 'corticosteroid', 'prednisone'],
+      formes: [],
+      schemas: [
+        {
+          id: 'asthme',
+          indication: { fr: 'Exacerbation d’asthme', nl: 'Astma-exacerbatie' },
+          mode: 'jour', unite: 'mg',
+          doseMin: 1, doseUsuelle: 1, doseMax: 2,
+          prises: [1], maxJour: 40,
+          duree: { fr: '3 à 5 jours', nl: '3 tot 5 dagen' },
+          note: {
+            fr: 'ATTENTION : il n’existe plus de spécialité à base de prednisone ou de prednisolone en Belgique (CBIP 2026) ; seule une préparation magistrale est possible, et il n’existe pas de formulation FTM. En pratique, utiliser la méthylprednisolone (Medrol) : 4 mg ≈ 5 mg de prednisolone. La dose pédiatrique en mg/kg n’est pas reprise par le CBIP.',
+            nl: 'OPGELET: er bestaat in België geen specialiteit meer op basis van prednison of prednisolon (BCFI 2026); enkel een magistrale bereiding is mogelijk, en er is geen TMF-formulering. Gebruik in de praktijk methylprednisolon (Medrol): 4 mg ≈ 5 mg prednisolon. De pediatrische dosis in mg/kg staat niet in het BCFI.'
+          },
+          sources: [SRC_CBIP]
+        }
+      ],
+      precautions: [
+        { fr: 'À prendre le matin.', nl: '’s Ochtends innemen.' },
+        { fr: 'Pas de décroissance nécessaire pour une cure courte.', nl: 'Geen afbouw nodig bij een korte kuur.' }
+      ],
+      contreIndications: [
+        { fr: 'Infection systémique non traitée.', nl: 'Onbehandelde systemische infectie.' }
+      ],
       sources: [SRC_CBIP]
     },
 
     {
       id: 'dexamethasone',
       dci: { fr: 'Dexaméthasone', nl: 'Dexamethason' },
-      marques: ['Dexamethasone (forme orale : vérifier la disponibilité)', 'Aacidexam'],
+      marques: ['Aacidexam (solution injectable)', 'Forme orale : préparation magistrale uniquement'],
       cbip: { fr: 'dexaméthasone', nl: 'dexamethason' },
       categorie: 'corticoide',
       frequent: false,
       verifie: false,
-      synonymes: ['laryngite', 'croup', 'pseudo-croup', 'valse kroep', 'laryngitis'],
+      synonymes: ['laryngite', 'croup', 'pseudo-croup', 'valse kroep', 'laryngitis', 'pseudokroep'],
       formes: [
-        { id: 'cp05', nom: comprime('0,5 mg'), type: 'solide', parUnite: 0.5, uniteNom: U_CP },
-        { id: 'sol4', nom: { fr: 'Solution 4 mg / ml (ampoule, per os)', nl: 'Oplossing 4 mg / ml (ampul, per os)' }, type: 'liquide', parMl: 4 }
+        { id: 'sol5', nom: { fr: 'Solution injectable 5 mg / ml (ampoule, utilisée per os)', nl: 'Oplossing voor injectie 5 mg / ml (ampul, per os gebruikt)' },
+          type: 'liquide', parMl: 5,
+          note: { fr: 'Seule présentation commercialisée en Belgique (Aacidexam). L’administration per os de la solution injectable est un usage hors RCP.',
+                  nl: 'Enige in België op de markt zijnde presentatie (Aacidexam). Orale toediening van de injectieoplossing is off-labelgebruik.' } }
       ],
       schemas: [
         {
           id: 'laryngite',
           indication: {
-            fr: 'Laryngite sous-glottique (pseudo-croup) — dose unique',
-            nl: 'Subglottische laryngitis (valse kroep) — eenmalige dosis'
+            fr: 'Laryngite striduleuse (pseudo-croup) — dose unique',
+            nl: 'Laryngitis stridulosa (pseudokroep) — eenmalige dosis'
           },
           mode: 'unique', unite: 'mg',
           doseMin: 0.15, doseUsuelle: 0.15, doseMax: 0.6,
@@ -906,18 +1060,21 @@
             nl: 'eenmalige dosis, eventueel te herhalen na 24 u'
           },
           note: {
-            fr: '0,15 mg/kg semble aussi efficace que 0,6 mg/kg (revue Cochrane).',
-            nl: '0,15 mg/kg lijkt even doeltreffend als 0,6 mg/kg (Cochrane-review).'
+            fr: 'La revue Cochrane (mise à jour 2023) conclut que 0,15 mg/kg POURRAIT être aussi efficace que la dose standard de 0,6 mg/kg, mais que la dose de 0,6 mg/kg réduit probablement davantage la sévérité à 24 h ; d’autres études sont nécessaires. Le CBIP ne donne pas de dose chiffrée : il indique seulement que les corticoïdes par voie orale sont proposés dans les formes légères et la nébulisation dans les formes sévères. La dose en mg/kg n’a donc pas pu être confirmée contre une source primaire belge.',
+            nl: 'De Cochrane-review (update 2023) besluit dat 0,15 mg/kg MOGELIJK even doeltreffend is als de standaarddosis van 0,6 mg/kg, maar dat 0,6 mg/kg de ernst na 24 u waarschijnlijk sterker vermindert; verder onderzoek is nodig. Het BCFI vermeldt geen cijfermatige dosis: het geeft enkel aan dat orale corticosteroïden worden voorgesteld bij lichte vormen en verneveling bij ernstige vormen. De dosis in mg/kg kon dus niet tegen een Belgische primaire bron worden bevestigd.'
           },
-          sources: [SRC_CBIP, {
-            label: { fr: 'Cochrane — Glucocorticoïdes pour la laryngite chez l’enfant',
-                     nl: 'Cochrane — Glucocorticoïden bij kroep bij kinderen' },
-            url: 'https://www.cochrane.org/evidence/CD001955_glucocorticoids-croup-children'
-          }]
+          sources: [SRC_CBIP, SRC_COCHRANE_CROUP]
         }
       ],
-      precautions: [],
-      contreIndications: [],
+      precautions: [
+        { fr: 'La dexaméthasone à usage oral n’est plus disponible comme spécialité en Belgique (CBIP 2026) : elle doit être prescrite en préparation magistrale.',
+          nl: 'Dexamethason voor oraal gebruik is in België niet meer beschikbaar als specialiteit (BCFI 2026): ze moet als magistrale bereiding worden voorgeschreven.' },
+        { fr: 'La laryngite striduleuse n’est pas une indication d’antibiotique (BAPCOC).',
+          nl: 'Laryngitis stridulosa is geen indicatie voor een antibioticum (BAPCOC).' }
+      ],
+      contreIndications: [
+        { fr: 'Infection systémique non traitée.', nl: 'Onbehandelde systemische infectie.' }
+      ],
       sources: [SRC_CBIP]
     },
 
@@ -927,18 +1084,14 @@
     {
       id: 'cetirizine',
       dci: { fr: 'Cétirizine', nl: 'Cetirizine' },
-      marques: ['Zyrtec', 'Cetirizine EG / Sandoz / Teva'],
+      marques: ['Zyrtec', 'Cetirizine EG', 'Cetirizine Sandoz', 'Cetirizin AB'],
       cbip: { fr: 'cétirizine', nl: 'cetirizine' },
       categorie: 'allergie',
       frequent: true,
-      verifie: false,
-      synonymes: ['antihistaminique', 'urticaire', 'rhinite', 'antihistaminicum', 'netelroos', 'hooikoorts'],
+      verifie: true,
+      synonymes: ['antihistaminique', 'urticaire', 'rhinite', 'antihistaminicum', 'netelroos', 'hooikoorts', 'zyrtec'],
       formes: [
-        { id: 'gouttes', nom: { fr: 'Gouttes 10 mg / ml', nl: 'Druppels 10 mg / ml' }, type: 'liquide', parMl: 10,
-          note: { fr: '1 ml = 20 gouttes, soit environ 0,5 mg par goutte.',
-                  nl: '1 ml = 20 druppels, dus ongeveer 0,5 mg per druppel.' } },
-        { id: 'sirop', nom: { fr: 'Sirop 1 mg / ml', nl: 'Siroop 1 mg / ml' }, type: 'liquide', parMl: 1 },
-        { id: 'cp10', nom: comprime('10 mg'), type: 'solide', parUnite: 10, uniteNom: U_CP }
+        { id: 'cp10', nom: { fr: 'Comprimé sécable 10 mg', nl: 'Deelbare tablet 10 mg' }, type: 'solide', parUnite: 10, uniteNom: U_CP }
       ],
       schemas: [
         {
@@ -949,27 +1102,27 @@
           },
           mode: 'paliers', unite: 'mg', critere: 'age',
           paliers: [
-            { label: { fr: '2 à 5 ans', nl: '2 tot 5 jaar' }, min: 24, max: 71, dose: 5, prises: 2,
-              libelle: { fr: '2,5 mg 2×/j', nl: '2,5 mg 2×/dag' } },
             { label: { fr: '6 à 11 ans', nl: '6 tot 11 jaar' }, min: 72, max: 143, dose: 10, prises: 2,
-              libelle: { fr: '5 mg 2×/j', nl: '5 mg 2×/dag' } },
+              libelle: { fr: '5 mg (½ comprimé) 2×/j', nl: '5 mg (½ tablet) 2×/dag' } },
             { label: { fr: '12 ans et plus', nl: '12 jaar en ouder' }, min: 144, max: null, dose: 10, prises: 1,
               libelle: { fr: '10 mg 1×/j', nl: '10 mg 1×/dag' } }
           ],
           duree: { fr: 'selon les symptômes', nl: 'afhankelijk van de symptomen' },
           note: {
-            fr: 'Dose fixe par tranche d’âge : elle ne dépend pas du poids.',
-            nl: 'Vaste dosis per leeftijdsgroep: ze hangt niet af van het gewicht.'
+            fr: 'Dose fixe par tranche d’âge : elle ne dépend pas du poids. Le CBIP ne donne pas de dose en dessous de 6 ans et la solution buvable de 1 mg/ml n’est plus disponible depuis avril 2024 : chez l’enfant de moins de 6 ans, envisager la desloratadine, qui existe encore en sirop.',
+            nl: 'Vaste dosis per leeftijdsgroep: ze hangt niet af van het gewicht. Het BCFI geeft geen dosis onder 6 jaar en de drank van 1 mg/ml is sinds april 2024 niet meer beschikbaar: overweeg bij kinderen jonger dan 6 jaar desloratadine, dat nog als siroop bestaat.'
           },
-          sources: [SRC_CBIP, SRC_RCP]
+          sources: [SRC_CBIP]
         }
       ],
       precautions: [
         { fr: 'Somnolence possible malgré le caractère « peu sédatif ».',
-          nl: 'Slaperigheid mogelijk ondanks het « weinig sederend » karakter.' }
+          nl: 'Slaperigheid mogelijk ondanks het « weinig sederend » karakter.' },
+        { fr: 'Plus aucune forme liquide n’est commercialisée en Belgique : seul le comprimé sécable de 10 mg existe.',
+          nl: 'Er is in België geen vloeibare vorm meer op de markt: enkel de deelbare tablet van 10 mg bestaat.' }
       ],
       contreIndications: [
-        { fr: 'Enfant de moins de 2 ans (selon la forme).', nl: 'Kind jonger dan 2 jaar (afhankelijk van de vorm).' }
+        { fr: 'Enfant de moins de 6 ans : pas de posologie ni de forme adaptée en Belgique.', nl: 'Kind jonger dan 6 jaar: geen posologie noch aangepaste vorm in België.' }
       ],
       sources: [SRC_CBIP]
     },
@@ -977,14 +1130,15 @@
     {
       id: 'desloratadine',
       dci: { fr: 'Desloratadine', nl: 'Desloratadine' },
-      marques: ['Aerius', 'Desloratadine EG / Sandoz'],
+      marques: ['Aerius (comprimés)', 'Desloratadine EG (solution buvable)', 'Desloratadine Teva (orodispersible 2,5 mg)'],
       cbip: { fr: 'desloratadine', nl: 'desloratadine' },
       categorie: 'allergie',
       frequent: false,
-      verifie: false,
-      synonymes: ['antihistaminique', 'rhinite', 'antihistaminicum', 'hooikoorts'],
+      verifie: true,
+      synonymes: ['antihistaminique', 'rhinite', 'antihistaminicum', 'hooikoorts', 'aerius'],
       formes: [
-        { id: 'sirop', nom: { fr: 'Sirop 0,5 mg / ml', nl: 'Siroop 0,5 mg / ml' }, type: 'liquide', parMl: 0.5 },
+        { id: 'sirop', nom: { fr: 'Solution buvable 0,5 mg / ml', nl: 'Drank 0,5 mg / ml' }, type: 'liquide', parMl: 0.5 },
+        { id: 'cp2_5', nom: { fr: 'Comprimé orodispersible 2,5 mg', nl: 'Orodispergeerbare tablet 2,5 mg' }, type: 'solide', parUnite: 2.5, uniteNom: U_CP, pasUnite: 1 },
         { id: 'cp5', nom: comprime('5 mg'), type: 'solide', parUnite: 5, uniteNom: U_CP }
       ],
       schemas: [
@@ -996,12 +1150,15 @@
           },
           mode: 'paliers', unite: 'mg', critere: 'age',
           paliers: [
-            { label: { fr: '1 à 5 ans', nl: '1 tot 5 jaar' }, min: 12, max: 71, dose: 1.25, prises: 1 },
-            { label: { fr: '6 à 11 ans', nl: '6 tot 11 jaar' }, min: 72, max: 143, dose: 2.5, prises: 1 },
-            { label: { fr: '12 ans et plus', nl: '12 jaar en ouder' }, min: 144, max: null, dose: 5, prises: 1 }
+            { label: { fr: '1 à 5 ans', nl: '1 tot 5 jaar' }, min: 12, max: 71, dose: 1.25, prises: 1,
+              libelle: { fr: '1,25 mg (2,5 ml de solution) 1×/j', nl: '1,25 mg (2,5 ml drank) 1×/dag' } },
+            { label: { fr: '6 à 11 ans', nl: '6 tot 11 jaar' }, min: 72, max: 143, dose: 2.5, prises: 1,
+              libelle: { fr: '2,5 mg (5 ml de solution) 1×/j', nl: '2,5 mg (5 ml drank) 1×/dag' } },
+            { label: { fr: '12 ans et plus', nl: '12 jaar en ouder' }, min: 144, max: null, dose: 5, prises: 1,
+              libelle: { fr: '5 mg (10 ml de solution) 1×/j', nl: '5 mg (10 ml drank) 1×/dag' } }
           ],
           duree: { fr: 'selon les symptômes', nl: 'afhankelijk van de symptomen' },
-          sources: [SRC_CBIP, SRC_RCP]
+          sources: [SRC_CBIP]
         }
       ],
       precautions: [],
@@ -1017,10 +1174,9 @@
       categorie: 'allergie',
       frequent: false,
       verifie: false,
-      synonymes: ['prurit', 'sedatif', 'antihistaminique', 'jeuk', 'kalmerend'],
+      synonymes: ['prurit', 'sedatif', 'antihistaminique', 'jeuk', 'kalmerend', 'atarax'],
       formes: [
-        { id: 'sirop', nom: { fr: 'Sirop 2 mg / ml', nl: 'Siroop 2 mg / ml' }, type: 'liquide', parMl: 2 },
-        { id: 'cp25', nom: comprime('25 mg'), type: 'solide', parUnite: 25, uniteNom: U_CP }
+        { id: 'cp25', nom: { fr: 'Comprimé sécable 25 mg', nl: 'Deelbare tablet 25 mg' }, type: 'solide', parUnite: 25, uniteNom: U_CP }
       ],
       schemas: [
         {
@@ -1031,6 +1187,10 @@
           prises: [3, 2], maxJour: 100,
           ageMinMois: 12,
           duree: { fr: 'de courte durée', nl: 'van korte duur' },
+          note: {
+            fr: 'ATTENTION : le CBIP ne donne qu’une dose adulte (25 mg jusqu’à 4×/jour, maximum 100 mg/jour) ; la dose pédiatrique en mg/kg n’a pas pu être confirmée contre une source primaire belge. Aucun sirop n’est commercialisé en Belgique : seul le comprimé sécable de 25 mg existe.',
+            nl: 'OPGELET: het BCFI geeft enkel een volwassendosis (25 mg tot 4×/dag, maximaal 100 mg/dag); de pediatrische dosis in mg/kg kon niet tegen een Belgische primaire bron worden bevestigd. Er is in België geen siroop op de markt: enkel de deelbare tablet van 25 mg bestaat.'
+          },
           sources: [SRC_CBIP]
         }
       ],
@@ -1052,57 +1212,62 @@
     {
       id: 'salbutamol',
       dci: { fr: 'Salbutamol', nl: 'Salbutamol' },
-      marques: ['Ventolin', 'Airomir', 'Docsalbuta'],
+      marques: ['Ventolin', 'Airomir', 'Novolizer Salbutamol'],
       cbip: { fr: 'salbutamol', nl: 'salbutamol' },
       categorie: 'respiratoire',
       frequent: true,
-      verifie: false,
-      synonymes: ['asthme', 'bronchodilatateur', 'aerosol', 'ventoline', 'astma', 'puffer'],
+      verifie: true,
+      synonymes: ['asthme', 'bronchodilatateur', 'aerosol', 'ventoline', 'astma', 'puffer', 'kortwerkend'],
       formes: [
         { id: 'mdi', nom: { fr: 'Aérosol-doseur 100 µg / bouffée (+ chambre d’inhalation)',
                             nl: 'Dosisaerosol 100 µg / pufje (+ voorzetkamer)' },
-          type: 'autre', parUnite: 100, uniteNom: U_BOUFFEE },
-        { id: 'neb25', nom: { fr: 'Solution pour nébulisation 2,5 mg / 2,5 ml',
-                              nl: 'Verneveloplossing 2,5 mg / 2,5 ml' }, type: 'liquide', parMl: 1 }
+          type: 'autre', parUnite: 100, uniteNom: U_BOUFFEE,
+          note: { fr: '0 à 3 ans : chambre d’inhalation + masque ; 4 à 6 ans : chambre d’inhalation. La poudre à inhaler ne convient qu’à partir de 6 ans.',
+                  nl: '0 tot 3 jaar: voorzetkamer + masker; 4 tot 6 jaar: voorzetkamer. Inhalatiepoeder is pas geschikt vanaf 6 jaar.' } },
+        { id: 'neb5', nom: { fr: 'Solution pour nébulisation 5 mg / ml (flacon de 10 ml)',
+                             nl: 'Verneveloplossing 5 mg / ml (flacon van 10 ml)' }, type: 'liquide', parMl: 5,
+          note: { fr: '2,5 mg correspondent à 0,5 ml et 5 mg à 1 ml de solution, à diluer dans du sérum physiologique.',
+                  nl: '2,5 mg komt overeen met 0,5 ml en 5 mg met 1 ml oplossing, te verdunnen in fysiologisch serum.' } }
       ],
       schemas: [
         {
-          id: 'crise-mdi',
+          id: 'mdi',
           indication: {
-            fr: 'Crise d’asthme — aérosol-doseur avec chambre d’inhalation',
-            nl: 'Astma-aanval — dosisaerosol met voorzetkamer'
+            fr: 'Asthme à la demande / prévention de l’asthme d’effort — aérosol-doseur avec chambre d’inhalation',
+            nl: 'Astma zo nodig / preventie van inspanningsastma — dosisaerosol met voorzetkamer'
           },
           mode: 'paliers', unite: 'µg', critere: 'age', prn: true,
           paliers: [
-            { label: { fr: 'Moins de 6 ans', nl: 'Jonger dan 6 jaar' }, min: 0, max: 71, dose: 200, prises: 1,
-              libelle: { fr: '2 bouffées', nl: '2 pufjes' } },
-            { label: { fr: '6 ans et plus', nl: '6 jaar en ouder' }, min: 72, max: null, dose: 400, prises: 1,
-              libelle: { fr: '4 bouffées', nl: '4 pufjes' } }
+            { label: { fr: 'Tout âge', nl: 'Alle leeftijden' }, min: 0, max: null, dose: 200, prises: 1,
+              libelle: { fr: '100 à 200 µg (1 à 2 bouffées), jusqu’à 4×/j', nl: '100 tot 200 µg (1 tot 2 pufjes), tot 4×/dag' } }
           ],
-          duree: { fr: 'à répéter selon la réponse clinique', nl: 'te herhalen volgens klinische respons' },
+          duree: { fr: 'à la demande, jusqu’à 4×/jour', nl: 'zo nodig, tot 4×/dag' },
           note: {
-            fr: 'En crise : 2 à 10 bouffées, à répéter toutes les 20 min pendant la 1re heure selon la sévérité. Toujours utiliser une chambre d’inhalation.',
-            nl: 'Bij een aanval: 2 tot 10 pufjes, te herhalen om de 20 min tijdens het eerste uur naargelang de ernst. Gebruik steeds een voorzetkamer.'
+            fr: 'Posologie CBIP d’entretien / à la demande : 100 à 200 µg jusqu’à 4×/jour, à tout âge. En crise aiguë, des doses nettement plus élevées et rapprochées sont utilisées (jusqu’à 10 bouffées répétées toutes les 20 min pendant la 1re heure) : ce schéma d’urgence n’est pas chiffré par le CBIP et n’est pas calculé ici. Toujours utiliser une chambre d’inhalation. En prévention de l’asthme d’effort : 1 à 15 minutes avant l’effort.',
+            nl: 'BCFI-posologie voor onderhoud / zo nodig: 100 tot 200 µg tot 4×/dag, op elke leeftijd. Bij een acute aanval worden duidelijk hogere en frequentere doses gebruikt (tot 10 pufjes, om de 20 min herhaald tijdens het eerste uur): dat spoedschema wordt door het BCFI niet becijferd en wordt hier niet berekend. Gebruik steeds een voorzetkamer. Ter preventie van inspanningsastma: 1 tot 15 minuten voor de inspanning.'
           },
           sources: [SRC_CBIP]
         },
         {
           id: 'neb',
           indication: { fr: 'Nébulisation', nl: 'Vernevelen' },
-          mode: 'paliers', unite: 'mg', critere: 'poids', prn: true,
+          mode: 'paliers', unite: 'mg', critere: 'age', prn: true,
           paliers: [
-            { label: { fr: 'Moins de 20 kg', nl: 'Minder dan 20 kg' }, min: 0, max: 19.99, dose: 2.5, prises: 1,
-              libelle: { fr: '2,5 mg par nébulisation', nl: '2,5 mg per verneveling' } },
-            { label: { fr: '20 kg et plus', nl: '20 kg en meer' }, min: 20, max: null, dose: 5, prises: 1,
-              libelle: { fr: '5 mg par nébulisation', nl: '5 mg per verneveling' } }
+            { label: { fr: 'Tout âge', nl: 'Alle leeftijden' }, min: 0, max: null, dose: 2.5, prises: 1,
+              libelle: { fr: '2,5 à 5 mg (0,5 à 1 ml), jusqu’à 4×/j', nl: '2,5 tot 5 mg (0,5 tot 1 ml), tot 4×/dag' } }
           ],
-          duree: { fr: 'à répéter selon la réponse clinique', nl: 'te herhalen volgens klinische respons' },
+          duree: { fr: 'à la demande, jusqu’à 4×/jour', nl: 'zo nodig, tot 4×/dag' },
+          note: {
+            fr: 'CBIP : 2,5 à 5 mg (0,5 à 1 ml de la solution à 5 mg/ml) jusqu’à 4×/jour, chez l’enfant comme chez l’adulte. La dose n’est pas graduée selon le poids par le CBIP.',
+            nl: 'BCFI: 2,5 tot 5 mg (0,5 tot 1 ml van de oplossing aan 5 mg/ml) tot 4×/dag, zowel bij kinderen als bij volwassenen. Het BCFI schaalt de dosis niet volgens het gewicht.'
+          },
           sources: [SRC_CBIP]
         }
       ],
       precautions: [
-        { fr: 'Tremblements, tachycardie.', nl: 'Tremor, tachycardie.' },
-        { fr: 'Vérifier la technique d’inhalation.', nl: 'Controleer de inhalatietechniek.' }
+        { fr: 'Tremblements, tachycardie, risque d’hypokaliémie.', nl: 'Tremor, tachycardie, risico op hypokaliëmie.' },
+        { fr: 'Vérifier la technique d’inhalation.', nl: 'Controleer de inhalatietechniek.' },
+        { fr: 'Éviter tout contact de la solution pour nébulisation avec les yeux.', nl: 'Vermijd elk contact van de verneveloplossing met de ogen.' }
       ],
       contreIndications: [],
       sources: [SRC_CBIP]
@@ -1111,35 +1276,43 @@
     {
       id: 'montelukast',
       dci: { fr: 'Montélukast', nl: 'Montelukast' },
-      marques: ['Singulair', 'Montelukast EG / Sandoz / Teva'],
+      marques: ['Singulair', 'Montelukast EG', 'Montelukast AB'],
       cbip: { fr: 'montélukast', nl: 'montelukast' },
       categorie: 'respiratoire',
       frequent: false,
-      verifie: false,
-      synonymes: ['asthme', 'antileucotriene', 'astma'],
+      verifie: true,
+      synonymes: ['asthme', 'antileucotriene', 'astma', 'singulair'],
       formes: [
-        { id: 'gran4', nom: { fr: 'Granulés 4 mg', nl: 'Granulaat 4 mg' }, type: 'sachet', parUnite: 4, uniteNom: U_SACHET },
-        { id: 'cp4', nom: { fr: 'Comprimé à croquer 4 mg', nl: 'Kauwtablet 4 mg' }, type: 'solide', parUnite: 4, uniteNom: U_CP },
-        { id: 'cp5', nom: { fr: 'Comprimé à croquer 5 mg', nl: 'Kauwtablet 5 mg' }, type: 'solide', parUnite: 5, uniteNom: U_CP },
-        { id: 'cp10', nom: comprime('10 mg'), type: 'solide', parUnite: 10, uniteNom: U_CP }
+        { id: 'cp4', nom: { fr: 'Comprimé à croquer 4 mg', nl: 'Kauwtablet 4 mg' }, type: 'solide', parUnite: 4, uniteNom: U_CP, pasUnite: 1 },
+        { id: 'cp5', nom: { fr: 'Comprimé à croquer 5 mg', nl: 'Kauwtablet 5 mg' }, type: 'solide', parUnite: 5, uniteNom: U_CP, pasUnite: 1 },
+        { id: 'cp10', nom: comprime('10 mg'), type: 'solide', parUnite: 10, uniteNom: U_CP, pasUnite: 1 }
       ],
       schemas: [
         {
           id: 'paliers',
-          indication: { fr: 'Asthme — dose fixe par âge', nl: 'Astma — vaste dosis per leeftijd' },
+          indication: { fr: 'Asthme — traitement d’entretien, dose fixe par âge', nl: 'Astma — onderhoudsbehandeling, vaste dosis per leeftijd' },
           mode: 'paliers', unite: 'mg', critere: 'age',
           paliers: [
-            { label: { fr: '6 mois à 5 ans', nl: '6 maanden tot 5 jaar' }, min: 6, max: 71, dose: 4, prises: 1 },
-            { label: { fr: '6 à 14 ans', nl: '6 tot 14 jaar' }, min: 72, max: 179, dose: 5, prises: 1 },
-            { label: { fr: '15 ans et plus', nl: '15 jaar en ouder' }, min: 180, max: null, dose: 10, prises: 1 }
+            { label: { fr: '6 mois à 5 ans', nl: '6 maanden tot 5 jaar' }, min: 6, max: 71, dose: 4, prises: 1,
+              libelle: { fr: '4 mg 1×/j', nl: '4 mg 1×/dag' } },
+            { label: { fr: '6 à 14 ans', nl: '6 tot 14 jaar' }, min: 72, max: 179, dose: 5, prises: 1,
+              libelle: { fr: '5 mg 1×/j', nl: '5 mg 1×/dag' } },
+            { label: { fr: '15 ans et plus', nl: '15 jaar en ouder' }, min: 180, max: null, dose: 10, prises: 1,
+              libelle: { fr: '10 mg 1×/j', nl: '10 mg 1×/dag' } }
           ],
           duree: { fr: 'traitement de fond, le soir', nl: 'onderhoudsbehandeling, ’s avonds' },
-          sources: [SRC_CBIP, SRC_RCP]
+          note: {
+            fr: 'Les granulés en sachet ne sont plus commercialisés en Belgique : le comprimé à croquer de 4 mg est la plus petite présentation disponible.',
+            nl: 'Het granulaat in zakjes is in België niet meer op de markt: de kauwtablet van 4 mg is de kleinste beschikbare presentatie.'
+          },
+          sources: [SRC_CBIP]
         }
       ],
       precautions: [
         { fr: 'Effets neuropsychiatriques rapportés (cauchemars, agitation, troubles de l’humeur) : en informer les parents.',
-          nl: 'Neuropsychiatrische effecten gemeld (nachtmerries, agitatie, stemmingsstoornissen): informeer de ouders.' }
+          nl: 'Neuropsychiatrische effecten gemeld (nachtmerries, agitatie, stemmingsstoornissen): informeer de ouders.' },
+        { fr: 'Ne doit pas être utilisé pour traiter une exacerbation aiguë d’asthme.',
+          nl: 'Mag niet worden gebruikt om een acute astma-exacerbatie te behandelen.' }
       ],
       contreIndications: [],
       sources: [SRC_CBIP]
@@ -1151,16 +1324,14 @@
     {
       id: 'ondansetron',
       dci: { fr: 'Ondansétron', nl: 'Ondansetron' },
-      marques: ['Zofran', 'Ondansetron EG / Sandoz'],
+      marques: ['Zofran', 'Ondansetron EG', 'Ondansetron Accord'],
       cbip: { fr: 'ondansétron', nl: 'ondansetron' },
       categorie: 'digestif',
       frequent: false,
       verifie: false,
       synonymes: ['vomissement', 'gastro', 'antiemetique', 'braken', 'buikgriep'],
       formes: [
-        { id: 'sirop', nom: { fr: 'Sirop 4 mg / 5 ml', nl: 'Siroop 4 mg / 5 ml' }, type: 'liquide', parMl: 0.8 },
-        { id: 'lyoc4', nom: { fr: 'Lyophilisat oral 4 mg', nl: 'Oraal lyofilisaat 4 mg' }, type: 'solide', parUnite: 4, uniteNom: U_LYOC, pasUnite: 1 },
-        { id: 'lyoc8', nom: { fr: 'Lyophilisat oral 8 mg', nl: 'Oraal lyofilisaat 8 mg' }, type: 'solide', parUnite: 8, uniteNom: U_LYOC, pasUnite: 1 }
+        { id: 'lyoc8', nom: { fr: 'Lyophilisat oral 8 mg (usage hospitalier)', nl: 'Oraal lyofilisaat 8 mg (ziekenhuisgebruik)' }, type: 'solide', parUnite: 8, uniteNom: U_LYOC, pasUnite: 1 }
       ],
       schemas: [
         {
@@ -1175,8 +1346,8 @@
           ageMinMois: 6,
           duree: { fr: 'dose unique', nl: 'eenmalige dosis' },
           note: {
-            fr: 'Usage hors RCP fréquent en pédiatrie pour faciliter la réhydratation orale.',
-            nl: 'Frequent off-labelgebruik in de pediatrie om orale rehydratatie mogelijk te maken.'
+            fr: 'ATTENTION : toutes les présentations d’ondansétron commercialisées en Belgique sont réservées à l’usage hospitalier (CBIP 2026) ; il n’existe ni sirop ni lyophilisat de 4 mg en officine. Le CBIP ne donne pas de posologie (usage spécialisé) : la dose en mg/kg n’a pas pu être confirmée contre une source primaire belge.',
+            nl: 'OPGELET: alle in België op de markt zijnde presentaties van ondansetron zijn voorbehouden voor ziekenhuisgebruik (BCFI 2026); er bestaat geen siroop of lyofilisaat van 4 mg in de officina. Het BCFI vermeldt geen posologie (gespecialiseerd gebruik): de dosis in mg/kg kon niet tegen een Belgische primaire bron worden bevestigd.'
           },
           sources: [SRC_CBIP]
         }
@@ -1191,28 +1362,29 @@
     {
       id: 'domperidone',
       dci: { fr: 'Dompéridone', nl: 'Domperidon' },
-      marques: ['Motilium', 'Domperidone EG / Sandoz'],
+      marques: ['Motilium', 'Domperidone EG', 'Domperidone Teva', 'Zilium'],
       cbip: { fr: 'dompéridone', nl: 'domperidon' },
       categorie: 'digestif',
       frequent: false,
-      verifie: false,
+      verifie: true,
       synonymes: ['vomissement', 'antiemetique', 'motilium', 'braken'],
       formes: [
-        { id: 'susp', nom: { fr: 'Suspension 1 mg / ml', nl: 'Suspensie 1 mg / ml' }, type: 'liquide', parMl: 1 },
-        { id: 'cp10', nom: comprime('10 mg'), type: 'solide', parUnite: 10, uniteNom: U_CP }
+        { id: 'cp10', nom: comprime('10 mg'), type: 'solide', parUnite: 10, uniteNom: U_CP, pasUnite: 1 },
+        { id: 'orodisp10', nom: { fr: 'Comprimé orodispersible 10 mg', nl: 'Orodispergeerbare tablet 10 mg' }, type: 'solide', parUnite: 10, uniteNom: U_CP, pasUnite: 1 }
       ],
       schemas: [
         {
-          id: 'standard',
-          indication: { fr: 'Nausées et vomissements', nl: 'Misselijkheid en braken' },
-          mode: 'prise', unite: 'mg',
-          doseMin: 0.25, doseUsuelle: 0.25, doseMax: 0.25,
-          prises: [3], maxJour: 30, maxPrise: 10,
-          maxParKgJour: 0.75,
+          id: 'paliers',
+          indication: { fr: 'Nausées et vomissements — à partir de 35 kg', nl: 'Misselijkheid en braken — vanaf 35 kg' },
+          mode: 'paliers', unite: 'mg', critere: 'poids',
+          paliers: [
+            { label: { fr: '35 kg et plus', nl: '35 kg en meer' }, min: 35, max: null, dose: 30, prises: 3,
+              libelle: { fr: '10 mg 3×/j au maximum', nl: 'maximaal 10 mg 3×/dag' } }
+          ],
           duree: { fr: 'maximum 7 jours', nl: 'maximaal 7 dagen' },
           note: {
-            fr: 'L’EMA a restreint l’usage : durée la plus courte, dose la plus faible.',
-            nl: 'Het EMA heeft het gebruik beperkt: kortste duur, laagste dosis.'
+            fr: 'Le CBIP ne donne de posologie qu’à partir de 35 kg (adulte et adolescent) et aucune suspension buvable n’est commercialisée en Belgique : la dompéridone n’est pas utilisable chez le jeune enfant. L’EMA a restreint l’usage : durée la plus courte, dose la plus faible.',
+            nl: 'Het BCFI geeft enkel een posologie vanaf 35 kg (volwassene en adolescent) en er is in België geen drank op de markt: domperidon is niet bruikbaar bij het jonge kind. Het EMA heeft het gebruik beperkt: kortste duur, laagste dosis.'
           },
           sources: [SRC_CBIP]
         }
@@ -1223,6 +1395,7 @@
       ],
       contreIndications: [
         { fr: 'Allongement du QT.', nl: 'QT-verlenging.' },
+        { fr: 'Poids inférieur à 35 kg (pas de posologie ni de forme adaptée).', nl: 'Gewicht onder 35 kg (geen posologie noch aangepaste vorm).' },
         { fr: 'Insuffisance hépatique modérée à sévère.', nl: 'Matige tot ernstige leverinsufficiëntie.' },
         { fr: 'Association aux inhibiteurs puissants du CYP3A4.', nl: 'Combinatie met krachtige CYP3A4-remmers.' }
       ],
@@ -1232,47 +1405,51 @@
     {
       id: 'macrogol',
       dci: { fr: 'Macrogol (polyéthylèneglycol)', nl: 'Macrogol (polyethyleenglycol)' },
-      marques: ['Movicol Junior', 'Forlax Junior', 'Transipeg'],
+      marques: ['Forlax Junior 4 g', 'Forlax 10 g', 'Movicol Junior', 'Movicol', 'Molaxole'],
       cbip: { fr: 'macrogol', nl: 'macrogol' },
       categorie: 'digestif',
       frequent: true,
-      verifie: false,
-      synonymes: ['constipation', 'laxatif', 'PEG', 'obstipatie', 'laxeermiddel'],
+      verifie: true,
+      synonymes: ['constipation', 'laxatif', 'PEG', 'obstipatie', 'laxeermiddel', 'forlax'],
       formes: [
-        { id: 'sachet4', nom: { fr: 'Sachet pédiatrique 4 g', nl: 'Pediatrisch zakje 4 g' }, type: 'sachet', parUnite: 4, uniteNom: U_SACHET },
-        { id: 'sachet10', nom: { fr: 'Sachet adulte 10 g', nl: 'Zakje voor volwassenen 10 g' }, type: 'sachet', parUnite: 10, uniteNom: U_SACHET }
+        { id: 'sachet4', nom: { fr: 'Sachet pédiatrique 4 g (Forlax Junior)', nl: 'Pediatrisch zakje 4 g (Forlax Junior)' }, type: 'sachet', parUnite: 4, uniteNom: U_SACHET },
+        { id: 'sachet10', nom: { fr: 'Sachet adulte 10 g (Forlax)', nl: 'Zakje voor volwassenen 10 g (Forlax)' }, type: 'sachet', parUnite: 10, uniteNom: U_SACHET }
       ],
       schemas: [
         {
           id: 'entretien',
           indication: {
-            fr: 'Constipation — traitement d’entretien',
-            nl: 'Obstipatie — onderhoudsbehandeling'
+            fr: 'Constipation — macrogol sans électrolytes',
+            nl: 'Obstipatie — macrogol zonder elektrolyten'
           },
           mode: 'paliers', unite: 'g', critere: 'age',
           paliers: [
-            { label: { fr: '6 mois à 1 an', nl: '6 maanden tot 1 jaar' }, min: 6, max: 23, dose: 4, prises: 1,
-              libelle: { fr: '1 sachet de 4 g', nl: '1 zakje van 4 g' } },
-            { label: { fr: '1 à 4 ans', nl: '1 tot 4 jaar' }, min: 24, max: 47, dose: 8, prises: 1,
-              libelle: { fr: '1 à 2 sachets de 4 g', nl: '1 tot 2 zakjes van 4 g' } },
+            { label: { fr: '6 mois à 1 an', nl: '6 maanden tot 1 jaar' }, min: 6, max: 11, dose: 4, prises: 1,
+              libelle: { fr: '1 sachet de 4 g par jour', nl: '1 zakje van 4 g per dag' } },
+            { label: { fr: '1 à 4 ans', nl: '1 tot 4 jaar' }, min: 12, max: 47, dose: 4, prises: 1,
+              libelle: { fr: '1 à 2 sachets de 4 g par jour', nl: '1 tot 2 zakjes van 4 g per dag' } },
             { label: { fr: '4 à 8 ans', nl: '4 tot 8 jaar' }, min: 48, max: 95, dose: 8, prises: 1,
-              libelle: { fr: '2 sachets de 4 g', nl: '2 zakjes van 4 g' } },
+              libelle: { fr: '2 à 4 sachets de 4 g par jour', nl: '2 tot 4 zakjes van 4 g per dag' } },
             { label: { fr: '8 ans et plus', nl: '8 jaar en ouder' }, min: 96, max: null, dose: 10, prises: 1,
-              libelle: { fr: '1 sachet adulte', nl: '1 zakje voor volwassenen' } }
+              libelle: { fr: '1 à 2 sachets adulte de 10 g par jour', nl: '1 tot 2 zakjes voor volwassenen van 10 g per dag' } }
           ],
           duree: { fr: 'plusieurs semaines à plusieurs mois', nl: 'enkele weken tot enkele maanden' },
           note: {
-            fr: 'Titrer selon la consistance des selles. La désimpaction fécale utilise des doses nettement plus élevées.',
-            nl: 'Titreren volgens de consistentie van de stoelgang. Fecale desimpactie vereist duidelijk hogere doses.'
+            fr: 'La valeur calculée est la dose de départ ; titrer ensuite selon la consistance des selles, dans les fourchettes indiquées par le CBIP. La désimpaction fécale utilise des doses nettement plus élevées, non couvertes ici. Le CBIP ne donne pas de posologie de macrogol sans électrolytes avant 6 mois.',
+            nl: 'De berekende waarde is de startdosis; titreer daarna volgens de consistentie van de stoelgang, binnen de door het BCFI vermelde marges. Fecale desimpactie vereist duidelijk hogere doses, die hier niet aan bod komen. Het BCFI geeft geen posologie voor macrogol zonder elektrolyten vóór 6 maanden.'
           },
-          sources: [SRC_CBIP, SRC_RCP]
+          sources: [SRC_CBIP]
         }
       ],
       precautions: [
         { fr: 'Bien diluer et assurer un apport hydrique suffisant.',
-          nl: 'Goed verdunnen en voldoende vochtinname verzekeren.' }
+          nl: 'Goed verdunnen en voldoende vochtinname verzekeren.' },
+        { fr: 'Les sachets Movicol et Molaxole contiennent des électrolytes et un dosage différent (13,125 g pour l’adulte, 6,563 g pour Movicol Junior) : ils ne sont pas interchangeables avec les sachets Forlax utilisés pour ce calcul.',
+          nl: 'De zakjes Movicol en Molaxole bevatten elektrolyten en een andere dosering (13,125 g voor volwassenen, 6,563 g voor Movicol Junior): ze zijn niet uitwisselbaar met de Forlax-zakjes die voor deze berekening worden gebruikt.' }
       ],
-      contreIndications: [{ fr: 'Occlusion intestinale.', nl: 'Darmobstructie.' }],
+      contreIndications: [
+        { fr: 'Obstruction ou perforation intestinale, mégacôlon toxique.', nl: 'Darmobstructie of -perforatie, toxisch megacolon.' }
+      ],
       sources: [SRC_CBIP]
     },
 
@@ -1283,11 +1460,13 @@
       cbip: { fr: 'racécadotril', nl: 'racecadotril' },
       categorie: 'digestif',
       frequent: false,
-      verifie: false,
-      synonymes: ['diarrhee', 'gastro', 'diarree', 'buikgriep'],
+      verifie: true,
+      synonymes: ['diarrhee', 'gastro', 'diarree', 'buikgriep', 'tiorfix'],
       formes: [
-        { id: 'sachet10', nom: { fr: 'Sachet 10 mg (nourrisson)', nl: 'Zakje 10 mg (zuigeling)' }, type: 'sachet', parUnite: 10, uniteNom: U_SACHET },
-        { id: 'sachet30', nom: { fr: 'Sachet 30 mg (enfant)', nl: 'Zakje 30 mg (kind)' }, type: 'sachet', parUnite: 30, uniteNom: U_SACHET }
+        { id: 'susp4', nom: { fr: 'Suspension buvable 4 mg / ml (nourrissons et enfants)', nl: 'Drank 4 mg / ml (zuigelingen en kinderen)' }, type: 'liquide', parMl: 4 },
+        { id: 'sachet10', nom: { fr: 'Sachet 10 mg (Baby)', nl: 'Zakje 10 mg (Baby)' }, type: 'sachet', parUnite: 10, uniteNom: U_SACHET },
+        { id: 'sachet30', nom: { fr: 'Sachet 30 mg (Junior)', nl: 'Zakje 30 mg (Junior)' }, type: 'sachet', parUnite: 30, uniteNom: U_SACHET },
+        { id: 'gel100', nom: gelule('100 mg'), type: 'solide', parUnite: 100, uniteNom: U_GEL, pasUnite: 1 }
       ],
       schemas: [
         {
@@ -1298,14 +1477,14 @@
           },
           mode: 'prise', unite: 'mg',
           doseMin: 1.5, doseUsuelle: 1.5, doseMax: 1.5,
-          prises: [3], maxJour: 300,
+          prises: [3], maxJour: 300, maxPrise: 100,
           ageMinMois: 3,
           duree: { fr: 'maximum 7 jours', nl: 'maximaal 7 dagen' },
           note: {
-            fr: 'Ne remplace jamais la réhydratation orale, qui reste le traitement essentiel.',
-            nl: 'Vervangt nooit de orale rehydratatie, die de essentiële behandeling blijft.'
+            fr: 'CBIP : enfant 1,5 mg/kg 3×/jour au maximum ; adulte et adolescent 100 mg 3×/jour au maximum. Ne remplace jamais la réhydratation orale, qui reste le traitement essentiel.',
+            nl: 'BCFI: kind maximaal 1,5 mg/kg 3×/dag; volwassene en adolescent maximaal 100 mg 3×/dag. Vervangt nooit de orale rehydratatie, die de essentiële behandeling blijft.'
           },
-          sources: [SRC_CBIP, SRC_RCP]
+          sources: [SRC_CBIP]
         }
       ],
       precautions: [],
@@ -1318,16 +1497,16 @@
     {
       id: 'omeprazole',
       dci: { fr: 'Oméprazole', nl: 'Omeprazol' },
-      marques: ['Losec', 'Omeprazole EG / Sandoz / Teva'],
+      marques: ['Losec', 'Omeprazole EG', 'Omeprazol AB', 'Acidcare'],
       cbip: { fr: 'oméprazole', nl: 'omeprazol' },
       categorie: 'digestif',
       frequent: false,
       verifie: false,
       synonymes: ['reflux', 'RGO', 'IPP', 'PPI', 'maagzuur'],
       formes: [
-        { id: 'gel10', nom: { fr: 'Gélule / comprimé 10 mg', nl: 'Capsule / tablet 10 mg' }, type: 'solide', parUnite: 10, uniteNom: U_GEL, pasUnite: 1 },
-        { id: 'gel20', nom: { fr: 'Gélule / comprimé 20 mg', nl: 'Capsule / tablet 20 mg' }, type: 'solide', parUnite: 20, uniteNom: U_GEL, pasUnite: 1 },
-        { id: 'gel40', nom: { fr: 'Gélule / comprimé 40 mg', nl: 'Capsule / tablet 40 mg' }, type: 'solide', parUnite: 40, uniteNom: U_GEL, pasUnite: 1 }
+        { id: 'gel10', nom: { fr: 'Gélule / comprimé gastro-résistant 10 mg', nl: 'Maagsapresistente capsule / tablet 10 mg' }, type: 'solide', parUnite: 10, uniteNom: U_GEL, pasUnite: 1 },
+        { id: 'gel20', nom: { fr: 'Gélule / comprimé gastro-résistant 20 mg', nl: 'Maagsapresistente capsule / tablet 20 mg' }, type: 'solide', parUnite: 20, uniteNom: U_GEL, pasUnite: 1 },
+        { id: 'gel40', nom: { fr: 'Gélule / comprimé gastro-résistant 40 mg', nl: 'Maagsapresistente capsule / tablet 40 mg' }, type: 'solide', parUnite: 40, uniteNom: U_GEL, pasUnite: 1 }
       ],
       schemas: [
         {
@@ -1342,14 +1521,14 @@
           ageMinMois: 12,
           duree: { fr: '4 à 8 semaines, puis réévaluer', nl: '4 tot 8 weken, daarna herevalueren' },
           note: {
-            fr: 'À prendre 30 min avant le repas. Réévaluer systématiquement : usage souvent excessif chez le nourrisson.',
-            nl: '30 min voor de maaltijd innemen. Systematisch herevalueren: vaak overmatig gebruik bij zuigelingen.'
+            fr: 'ATTENTION : le CBIP ne donne que des doses adultes pour l’oméprazole ; la dose pédiatrique en mg/kg n’a pas pu être confirmée contre une source primaire belge. Doses adultes confirmées : symptômes de reflux 10 à 20 mg 1×/j pendant 2 à 4 semaines ; œsophagite de reflux 20 (voire 40) mg 1×/j pendant 4 (voire 8) semaines. À prendre 30 min avant le repas ; réévaluer systématiquement.',
+            nl: 'OPGELET: het BCFI geeft enkel volwassendoses voor omeprazol; de pediatrische dosis in mg/kg kon niet tegen een Belgische primaire bron worden bevestigd. Bevestigde volwassendoses: refluxsymptomen 10 tot 20 mg 1×/dag gedurende 2 tot 4 weken; refluxoesofagitis 20 (eventueel 40) mg 1×/dag gedurende 4 (eventueel 8) weken. In te nemen 30 min voor de maaltijd; systematisch herevalueren.'
           },
           sources: [SRC_CBIP]
         }
       ],
       precautions: [
-        { fr: 'Ne pas prolonger sans réévaluation.', nl: 'Niet verlengen zonder herevaluatie.' }
+        { fr: 'Ne pas prolonger sans réévaluation ; usage souvent excessif chez le nourrisson.', nl: 'Niet verlengen zonder herevaluatie; vaak overmatig gebruik bij zuigelingen.' }
       ],
       contreIndications: [],
       sources: [SRC_CBIP]
@@ -1361,58 +1540,60 @@
     {
       id: 'nystatine',
       dci: { fr: 'Nystatine', nl: 'Nystatine' },
-      marques: ['Nystatine', 'Mycostatine (disponibilité à vérifier)'],
+      marques: ['Nilstat'],
       cbip: { fr: 'nystatine', nl: 'nystatine' },
       categorie: 'antifongique',
       frequent: false,
-      verifie: false,
-      synonymes: ['muguet', 'candidose', 'spruw', 'candidiasis'],
+      verifie: true,
+      synonymes: ['muguet', 'candidose', 'spruw', 'candidiasis', 'nilstat'],
       formes: [
-        { id: 'susp', nom: { fr: 'Suspension orale 100 000 UI / ml', nl: 'Orale suspensie 100 000 IE / ml' }, type: 'liquide', parMl: 100000 }
+        { id: 'susp', nom: { fr: 'Suspension orale 100 000 UI / ml (flacon de 30 ml)', nl: 'Orale suspensie 100 000 IE / ml (flacon van 30 ml)' }, type: 'liquide', parMl: 100000 }
       ],
       schemas: [
         {
           id: 'muguet',
-          indication: { fr: 'Muguet buccal — dose fixe', nl: 'Orale spruw — vaste dosis' },
+          indication: { fr: 'Muguet buccal — dose fixe par âge', nl: 'Orale spruw — vaste dosis per leeftijd' },
           mode: 'paliers', unite: 'UI', critere: 'age',
           paliers: [
-            { label: { fr: 'Nourrisson', nl: 'Zuigeling' }, min: 0, max: 23, dose: 400000, prises: 4,
+            { label: { fr: 'Moins de 6 mois', nl: 'Jonger dan 6 maanden' }, min: 0, max: 5, dose: 400000, prises: 4,
               libelle: { fr: '100 000 UI (1 ml) 4×/j', nl: '100 000 IE (1 ml) 4×/dag' } },
-            { label: { fr: 'Enfant', nl: 'Kind' }, min: 24, max: null, dose: 800000, prises: 4,
-              libelle: { fr: '200 000 UI (2 ml) 4×/j', nl: '200 000 IE (2 ml) 4×/dag' } }
+            { label: { fr: '6 mois et plus', nl: '6 maanden en ouder' }, min: 6, max: null, dose: 600000, prises: 4,
+              libelle: { fr: '150 000 UI (1,5 ml) 4×/j', nl: '150 000 IE (1,5 ml) 4×/dag' } }
           ],
           duree: {
-            fr: '7 à 14 jours, à poursuivre 48 h après la guérison',
-            nl: '7 tot 14 dagen, 48 u na genezing voort te zetten'
+            fr: 'jusqu’à 48 h après la disparition des lésions',
+            nl: 'tot 48 u na het verdwijnen van de letsels'
           },
           note: {
-            fr: 'Badigeonner la muqueuse ; garder en bouche le plus longtemps possible avant d’avaler.',
-            nl: 'Het slijmvlies bestrijken; zo lang mogelijk in de mond houden voor het inslikken.'
+            fr: 'Répartir chaque dose sur les deux côtés de la cavité buccale et garder la suspension le plus longtemps possible en bouche avant d’avaler. Cette posologie, proposée par le BAPCOC et reprise par le CBIP, est très différente de celle du RCP de Nilstat. À partir de 6 mois, le gel buccal de miconazole est plus efficace que la nystatine.',
+            nl: 'Verdeel elke dosis over beide zijden van de mondholte en houd de suspensie zo lang mogelijk in de mond voor het inslikken. Deze posologie, voorgesteld door BAPCOC en overgenomen door het BCFI, verschilt sterk van die in de SKP van Nilstat. Vanaf 6 maanden is miconazol-mondgel doeltreffender dan nystatine.'
           },
-          sources: [SRC_CBIP, SRC_RCP]
+          sources: [SRC_BAPCOC, SRC_CBIP]
         }
       ],
       precautions: [
-        { fr: 'Traiter simultanément les tétines et le mamelon en cas d’allaitement.',
-          nl: 'Behandel tegelijk de spenen en de tepel bij borstvoeding.' }
+        { fr: 'Traiter simultanément les tétines et le mamelon en cas d’allaitement ; stériliser soigneusement tétines et sucettes.',
+          nl: 'Behandel tegelijk de spenen en de tepel bij borstvoeding; steriliseer spenen en fopspenen zorgvuldig.' },
+        { fr: 'Chez le nourrisson, le muguet guérit généralement spontanément en 3 à 8 semaines ; le traitement raccourcit la durée des symptômes.',
+          nl: 'Bij zuigelingen geneest spruw meestal spontaan in 3 tot 8 weken; de behandeling verkort de duur van de symptomen.' }
       ],
       contreIndications: [],
-      sources: [SRC_CBIP]
+      sources: [SRC_BAPCOC, SRC_CBIP]
     },
 
     {
       id: 'miconazole-gel',
       dci: { fr: 'Miconazole (gel buccal)', nl: 'Miconazol (mondgel)' },
-      marques: ['Daktarin gel oral'],
+      marques: ['Daktarin gel oromuqueux'],
       cbip: { fr: 'miconazole', nl: 'miconazol' },
       categorie: 'antifongique',
       frequent: false,
-      verifie: false,
+      verifie: true,
       synonymes: ['muguet', 'candidose', 'daktarin', 'spruw'],
       formes: [
-        { id: 'gel', nom: { fr: 'Gel buccal 20 mg / g', nl: 'Mondgel 20 mg / g' }, type: 'liquide', parMl: 1,
-          note: { fr: 'Doses exprimées en ml de gel : la mesurette fournie contient 5 ml.',
-                  nl: 'Doses uitgedrukt in ml gel: het bijgeleverde maatlepeltje bevat 5 ml.' } }
+        { id: 'gel', nom: { fr: 'Gel oromuqueux 20 mg / g (tube de 40 g)', nl: 'Mondgel 20 mg / g (tube van 40 g)' }, type: 'liquide', parMl: 1,
+          note: { fr: 'Doses exprimées en ml de gel.',
+                  nl: 'Doses uitgedrukt in ml gel.' } }
       ],
       schemas: [
         {
@@ -1420,17 +1601,17 @@
           indication: { fr: 'Muguet buccal — dose fixe par âge', nl: 'Orale spruw — vaste dosis per leeftijd' },
           mode: 'paliers', unite: 'ml', critere: 'age',
           paliers: [
-            { label: { fr: '4 mois à 2 ans', nl: '4 maanden tot 2 jaar' }, min: 4, max: 23, dose: 5, prises: 4,
-              libelle: { fr: '1,25 ml (¼ de mesurette) 4×/j', nl: '1,25 ml (¼ maatlepeltje) 4×/dag' } },
-            { label: { fr: '2 ans et plus', nl: '2 jaar en ouder' }, min: 24, max: null, dose: 10, prises: 4,
-              libelle: { fr: '2,5 ml (½ mesurette) 4×/j', nl: '2,5 ml (½ maatlepeltje) 4×/dag' } }
+            { label: { fr: '6 mois à 11 ans', nl: '6 maanden tot 11 jaar' }, min: 6, max: 143, dose: 5, prises: 4,
+              libelle: { fr: '1,25 ml 4×/j', nl: '1,25 ml 4×/dag' } },
+            { label: { fr: '12 ans et plus', nl: '12 jaar en ouder' }, min: 144, max: null, dose: 10, prises: 4,
+              libelle: { fr: '2,5 ml 4×/j', nl: '2,5 ml 4×/dag' } }
           ],
-          duree: { fr: '7 à 14 jours', nl: '7 tot 14 dagen' },
+          duree: { fr: 'jusqu’à 1 semaine après la disparition des lésions', nl: 'tot 1 week na het verdwijnen van de letsels' },
           note: {
-            fr: 'Appliquer sur la muqueuse après les repas, ne pas avaler d’emblée.',
-            nl: 'Na de maaltijd op het slijmvlies aanbrengen, niet meteen inslikken.'
+            fr: 'Bien répartir le gel du bout du doigt sur les muqueuses, après les repas, sans aller jusqu’au voile du palais, et ne pas avaler d’emblée. Plus efficace que la suspension de nystatine, mais contre-indiqué avant 6 mois.',
+            nl: 'Verdeel de gel met de vingertop goed over de slijmvliezen, na de maaltijd, zonder tot het zachte gehemelte te gaan, en slik niet meteen door. Doeltreffender dan nystatinesuspensie, maar gecontra-indiceerd onder 6 maanden.'
           },
-          sources: [SRC_CBIP, SRC_RCP]
+          sources: [SRC_BAPCOC, SRC_CBIP]
         }
       ],
       precautions: [
@@ -1438,39 +1619,45 @@
           nl: 'Belangrijke interactie met orale anticoagulantia.' }
       ],
       contreIndications: [
-        { fr: 'Nourrisson de moins de 4 mois (risque de fausse route).',
-          nl: 'Zuigeling jonger dan 4 maanden (verslikkingsrisico).' }
+        { fr: 'Nourrisson de moins de 6 mois (risque de suffocation).',
+          nl: 'Zuigeling jonger dan 6 maanden (verstikkingsrisico).' }
       ],
-      sources: [SRC_CBIP]
+      sources: [SRC_BAPCOC, SRC_CBIP]
     },
 
     {
       id: 'fluconazole',
       dci: { fr: 'Fluconazole', nl: 'Fluconazol' },
-      marques: ['Diflucan', 'Fluconazole EG / Sandoz / Teva'],
+      marques: ['Diflucan', 'Fluconazole EG', 'Fluconazole Viatris'],
       cbip: { fr: 'fluconazole', nl: 'fluconazol' },
       categorie: 'antifongique',
       frequent: false,
-      verifie: false,
-      synonymes: ['candidose', 'mycose', 'schimmel'],
+      verifie: true,
+      synonymes: ['candidose', 'mycose', 'schimmel', 'muguet', 'spruw'],
       formes: [
-        { id: 'susp', nom: suspOrale(50), type: 'liquide', parMl: 10 },
+        { id: 'susp10', nom: { fr: 'Suspension orale 10 mg / ml (50 mg / 5 ml)', nl: 'Orale suspensie 10 mg / ml (50 mg / 5 ml)' }, type: 'liquide', parMl: 10 },
+        { id: 'susp40', nom: { fr: 'Suspension orale 40 mg / ml (200 mg / 5 ml)', nl: 'Orale suspensie 40 mg / ml (200 mg / 5 ml)' }, type: 'liquide', parMl: 40 },
         { id: 'gel50', nom: gelule('50 mg'), type: 'solide', parUnite: 50, uniteNom: U_GEL, pasUnite: 1 },
-        { id: 'gel150', nom: gelule('150 mg'), type: 'solide', parUnite: 150, uniteNom: U_GEL, pasUnite: 1 }
+        { id: 'gel150', nom: gelule('150 mg'), type: 'solide', parUnite: 150, uniteNom: U_GEL, pasUnite: 1 },
+        { id: 'gel200', nom: gelule('200 mg'), type: 'solide', parUnite: 200, uniteNom: U_GEL, pasUnite: 1 }
       ],
       schemas: [
         {
-          id: 'muqueuse',
-          indication: { fr: 'Candidose muqueuse', nl: 'Slijmvliescandidiasis' },
-          mode: 'jour', unite: 'mg',
-          doseMin: 3, doseUsuelle: 3, doseMax: 6,
-          prises: [1], maxJour: 400,
-          duree: { fr: '7 à 14 jours', nl: '7 tot 14 dagen' },
-          note: {
-            fr: 'Une dose de charge (double dose au 1er jour) est possible.',
-            nl: 'Een oplaaddosis (dubbele dosis op dag 1) is mogelijk.'
+          id: 'muguet',
+          indication: {
+            fr: 'Candidose oropharyngée — traitement systémique après échec du traitement local',
+            nl: 'Orofaryngeale candidose — systemische behandeling na falen van de lokale behandeling'
           },
-          sources: [SRC_CBIP]
+          mode: 'jour', unite: 'mg',
+          doseMin: 3, doseUsuelle: 3, doseMax: 3,
+          prises: [1], maxJour: 100,
+          ageMinMois: 1,
+          duree: { fr: '7 jours', nl: '7 dagen' },
+          note: {
+            fr: 'BAPCOC 2026 : 3 mg/kg/jour pendant 7 jours chez le nourrisson à partir de 1 mois. Le nourrisson de moins de 1 mois est adressé au pédiatre. Adulte : 200 mg le 1er jour, puis 100 mg/jour pendant 7 à 21 jours.',
+            nl: 'BAPCOC 2026: 3 mg/kg/dag gedurende 7 dagen bij zuigelingen vanaf 1 maand. Zuigelingen jonger dan 1 maand worden naar de kinderarts verwezen. Volwassene: 200 mg op dag 1, daarna 100 mg/dag gedurende 7 tot 21 dagen.'
+          },
+          sources: [SRC_BAPCOC, SRC_CBIP]
         }
       ],
       precautions: [
@@ -1478,7 +1665,7 @@
         QT_LONG
       ],
       contreIndications: [],
-      sources: [SRC_CBIP]
+      sources: [SRC_BAPCOC, SRC_CBIP]
     },
 
     /* ============================================================== */
@@ -1487,14 +1674,14 @@
     {
       id: 'aciclovir',
       dci: { fr: 'Aciclovir', nl: 'Aciclovir' },
-      marques: ['Zovirax', 'Aciclovir EG / Sandoz / Teva'],
+      marques: ['Aciclovir GSK', 'Aciclovir EG', 'Aciclovir AB'],
       cbip: { fr: 'aciclovir', nl: 'aciclovir' },
       categorie: 'antiviral',
       frequent: false,
       verifie: false,
       synonymes: ['herpes', 'varicelle', 'zona', 'waterpokken', 'gordelroos'],
       formes: [
-        { id: 'susp', nom: suspOrale(200), type: 'liquide', parMl: 40 },
+        { id: 'susp80', nom: { fr: 'Suspension orale 400 mg / 5 ml (80 mg/ml)', nl: 'Orale suspensie 400 mg / 5 ml (80 mg/ml)' }, type: 'liquide', parMl: 80 },
         { id: 'cp200', nom: comprime('200 mg'), type: 'solide', parUnite: 200, uniteNom: U_CP },
         { id: 'cp800', nom: comprime('800 mg'), type: 'solide', parUnite: 800, uniteNom: U_CP }
       ],
@@ -1502,14 +1689,18 @@
         {
           id: 'varicelle',
           indication: {
-            fr: 'Varicelle (enfant à risque, dans les 24 h)',
-            nl: 'Waterpokken (risicokind, binnen de 24 u)'
+            fr: 'Varicelle (à envisager à partir de 12 ans, dans les 24 h suivant l’éruption)',
+            nl: 'Waterpokken (te overwegen vanaf 12 jaar, binnen 24 u na de uitslag)'
           },
           mode: 'prise', unite: 'mg',
           doseMin: 20, doseUsuelle: 20, doseMax: 20,
-          prises: [4], maxJour: 3200, maxPrise: 800,
-          duree: { fr: '5 jours', nl: '5 dagen' },
-          sources: [SRC_CBIP]
+          prises: [4, 5], maxJour: 4000, maxPrise: 800,
+          duree: { fr: '5 à 7 jours', nl: '5 tot 7 dagen' },
+          note: {
+            fr: 'ATTENTION : le CBIP ne donne pas de dose pédiatrique en mg/kg pour l’aciclovir ; la dose affichée n’a pas pu être confirmée contre une source primaire belge. Dose adulte confirmée par le BAPCOC 2026 : 4 g/jour en 5 prises pendant 7 jours. Le traitement antiviral n’est PAS recommandé chez l’enfant en bonne santé (évolution favorable) ; il peut être envisagé à partir de 12 ans. En cas d’aggravation, chez l’immunodéprimé ou le nouveau-né : traitement intraveineux.',
+            nl: 'OPGELET: het BCFI geeft geen pediatrische dosis in mg/kg voor aciclovir; de weergegeven dosis kon niet tegen een Belgische primaire bron worden bevestigd. Door BAPCOC 2026 bevestigde volwassendosis: 4 g/dag in 5 giften gedurende 7 dagen. Antivirale behandeling wordt NIET aanbevolen bij gezonde kinderen (gunstig verloop); ze kan worden overwogen vanaf 12 jaar. Bij verergering, bij immuungedeprimeerden of bij pasgeborenen: intraveneuze behandeling.'
+          },
+          sources: [SRC_BAPCOC, SRC_CBIP]
         },
         {
           id: 'gingivostomatite',
@@ -1518,27 +1709,32 @@
           doseMin: 40, doseUsuelle: 60, doseMax: 80,
           prises: [4, 5], maxJour: 2000,
           duree: { fr: '5 à 7 jours', nl: '5 tot 7 dagen' },
+          note: {
+            fr: 'ATTENTION : indication et dose pédiatrique non reprises par le CBIP ni par le BAPCOC 2026 ; valeurs non confirmées contre une source primaire belge, à contrôler avant prescription.',
+            nl: 'OPGELET: indicatie en pediatrische dosis staan niet in het BCFI noch in de BAPCOC-gids 2026; niet-bevestigde waarden, te controleren vóór voorschrijven.'
+          },
           sources: [SRC_CBIP]
         }
       ],
       precautions: [
-        { fr: 'Assurer une hydratation suffisante.', nl: 'Zorg voor voldoende hydratatie.' }
+        { fr: 'Assurer une hydratation suffisante.', nl: 'Zorg voor voldoende hydratatie.' },
+        { fr: 'Zovirax n’existe plus en Belgique que sous forme de crème pour l’herpès labial ; les formes orales sont génériques.',
+          nl: 'Zovirax bestaat in België enkel nog als crème voor herpes labialis; de orale vormen zijn generiek.' }
       ],
       contreIndications: [],
-      sources: [SRC_CBIP]
+      sources: [SRC_BAPCOC, SRC_CBIP]
     },
 
     {
       id: 'oseltamivir',
       dci: { fr: 'Oseltamivir', nl: 'Oseltamivir' },
-      marques: ['Tamiflu', 'Oseltamivir EG'],
+      marques: ['Tamiflu'],
       cbip: { fr: 'oseltamivir', nl: 'oseltamivir' },
       categorie: 'antiviral',
       frequent: false,
-      verifie: false,
-      synonymes: ['grippe', 'influenza', 'griep'],
+      verifie: true,
+      synonymes: ['grippe', 'influenza', 'griep', 'tamiflu'],
       formes: [
-        { id: 'susp', nom: { fr: 'Suspension orale 6 mg / ml', nl: 'Orale suspensie 6 mg / ml' }, type: 'liquide', parMl: 6 },
         { id: 'gel30', nom: gelule('30 mg'), type: 'solide', parUnite: 30, uniteNom: U_GEL, pasUnite: 1 },
         { id: 'gel45', nom: gelule('45 mg'), type: 'solide', parUnite: 45, uniteNom: U_GEL, pasUnite: 1 },
         { id: 'gel75', nom: gelule('75 mg'), type: 'solide', parUnite: 75, uniteNom: U_GEL, pasUnite: 1 }
@@ -1547,33 +1743,36 @@
         {
           id: 'grippe',
           indication: {
-            fr: 'Grippe — traitement (à partir de 1 an), dose fixe par poids',
-            nl: 'Griep — behandeling (vanaf 1 jaar), vaste dosis per gewicht'
+            fr: 'Grippe — traitement à partir de 1 an, dose fixe par poids',
+            nl: 'Griep — behandeling vanaf 1 jaar, vaste dosis per gewicht'
           },
           mode: 'paliers', unite: 'mg', critere: 'poids',
           paliers: [
-            { label: { fr: '15 kg ou moins', nl: '15 kg of minder' }, min: 0, max: 15, dose: 60, prises: 2,
+            { label: { fr: '10 à 15 kg', nl: '10 tot 15 kg' }, min: 10, max: 15, dose: 60, prises: 2,
               libelle: { fr: '30 mg 2×/j', nl: '30 mg 2×/dag' } },
-            { label: { fr: 'plus de 15 à 23 kg', nl: 'meer dan 15 tot 23 kg' }, min: 15.01, max: 23, dose: 90, prises: 2,
+            { label: { fr: 'plus de 15 à 24 kg', nl: 'meer dan 15 tot 24 kg' }, min: 15.01, max: 24, dose: 90, prises: 2,
               libelle: { fr: '45 mg 2×/j', nl: '45 mg 2×/dag' } },
-            { label: { fr: 'plus de 23 à 40 kg', nl: 'meer dan 23 tot 40 kg' }, min: 23.01, max: 40, dose: 120, prises: 2,
+            { label: { fr: 'plus de 24 à 40 kg', nl: 'meer dan 24 tot 40 kg' }, min: 24.01, max: 40, dose: 120, prises: 2,
               libelle: { fr: '60 mg 2×/j', nl: '60 mg 2×/dag' } },
             { label: { fr: 'plus de 40 kg', nl: 'meer dan 40 kg' }, min: 40.01, max: null, dose: 150, prises: 2,
               libelle: { fr: '75 mg 2×/j', nl: '75 mg 2×/dag' } }
           ],
           duree: { fr: '5 jours', nl: '5 dagen' },
           note: {
-            fr: 'À débuter dans les 48 h suivant le début des symptômes.',
-            nl: 'Te starten binnen 48 u na het begin van de symptomen.'
+            fr: 'Le BAPCOC 2026 comme le CBIP jugent la place de l’oseltamivir très limitée : il réduit la durée des symptômes d’un jour tout au plus et n’a pas d’effet prouvé sur les complications graves. À débuter moins de 8 h (CBIP) à 48 h après le début des symptômes. Chez l’enfant de moins de 1 an ou de moins de 10 kg : 3 mg/kg 2×/jour (max. 60 mg/jour), non couvert par ce tableau. Aucune suspension buvable n’est commercialisée en Belgique.',
+            nl: 'Zowel BAPCOC 2026 als het BCFI beschouwen de plaats van oseltamivir als zeer beperkt: het verkort de symptoomduur hooguit met één dag en heeft geen bewezen effect op ernstige complicaties. Te starten minder dan 8 u (BCFI) tot 48 u na het begin van de symptomen. Bij kinderen jonger dan 1 jaar of lichter dan 10 kg: 3 mg/kg 2×/dag (max. 60 mg/dag), niet in deze tabel opgenomen. Er is in België geen drank op de markt.'
           },
-          sources: [SRC_CBIP, SRC_RCP]
+          sources: [SRC_CBIP, SRC_BAPCOC]
         }
       ],
       precautions: [
-        { fr: 'Nausées et vomissements fréquents.', nl: 'Vaak misselijkheid en braken.' }
+        { fr: 'Nausées et vomissements fréquents ; effets neuropsychiatriques rapportés chez les jeunes.',
+          nl: 'Vaak misselijkheid en braken; neuropsychiatrische effecten gemeld bij jongeren.' },
+        { fr: 'La vaccination annuelle des groupes à risque reste la mesure essentielle.',
+          nl: 'De jaarlijkse vaccinatie van risicogroepen blijft de essentiële maatregel.' }
       ],
       contreIndications: [],
-      sources: [SRC_CBIP]
+      sources: [SRC_CBIP, SRC_BAPCOC]
     },
 
     /* ============================================================== */
@@ -1582,12 +1781,12 @@
     {
       id: 'mebendazole',
       dci: { fr: 'Mébendazole', nl: 'Mebendazol' },
-      marques: ['Vermox', 'Docmebenda'],
+      marques: ['Vermox'],
       cbip: { fr: 'mébendazole', nl: 'mebendazol' },
       categorie: 'antiparasitaire',
       frequent: true,
-      verifie: false,
-      synonymes: ['oxyure', 'vers', 'vermifuge', 'aarsmaden', 'wormen'],
+      verifie: true,
+      synonymes: ['oxyure', 'vers', 'vermifuge', 'aarsmaden', 'wormen', 'vermox'],
       formes: [
         { id: 'susp', nom: suspOrale(100), type: 'liquide', parMl: 20 },
         { id: 'cp100', nom: comprime('100 mg'), type: 'solide', parUnite: 100, uniteNom: U_CP }
@@ -1595,21 +1794,21 @@
       schemas: [
         {
           id: 'oxyurose',
-          indication: { fr: 'Oxyurose — dose unique fixe', nl: 'Aarsmadeninfectie — vaste eenmalige dosis' },
+          indication: { fr: 'Oxyurose (Enterobius vermicularis) — dose unique fixe', nl: 'Aarsmadeninfectie (Enterobius vermicularis) — vaste eenmalige dosis' },
           mode: 'paliers', unite: 'mg', critere: 'age',
           paliers: [
-            { label: { fr: '1 an et plus', nl: '1 jaar en ouder' }, min: 12, max: null, dose: 100, prises: 1,
+            { label: { fr: '2 ans et plus', nl: '2 jaar en ouder' }, min: 24, max: null, dose: 100, prises: 1,
               libelle: { fr: '100 mg en dose unique', nl: '100 mg als eenmalige dosis' } }
           ],
           duree: {
-            fr: 'dose unique, à répéter après 2 semaines',
-            nl: 'eenmalige dosis, te herhalen na 2 weken'
+            fr: 'dose unique, à répéter après 14 jours',
+            nl: 'eenmalige dosis, te herhalen na 14 dagen'
           },
           note: {
-            fr: 'Traiter simultanément toute la famille. Dose indépendante du poids.',
-            nl: 'Behandel het hele gezin tegelijk. Dosis onafhankelijk van het gewicht.'
+            fr: 'CBIP : adulte et enfant à partir de 2 ans, 100 mg en 1 prise, puis à nouveau 100 mg après 14 jours ; si nécessaire, répéter le traitement complet après 14 jours. Traiter simultanément toute la famille. Dose indépendante du poids.',
+            nl: 'BCFI: volwassene en kind vanaf 2 jaar, 100 mg in 1 gift, daarna opnieuw 100 mg na 14 dagen; herhaal indien nodig de volledige behandeling na 14 dagen. Behandel het hele gezin tegelijk. Dosis onafhankelijk van het gewicht.'
           },
-          sources: [SRC_CBIP, SRC_RCP]
+          sources: [SRC_CBIP]
         },
         {
           id: 'ascaris',
@@ -1619,11 +1818,15 @@
           },
           mode: 'paliers', unite: 'mg', critere: 'age',
           paliers: [
-            { label: { fr: '1 an et plus', nl: '1 jaar en ouder' }, min: 12, max: null, dose: 200, prises: 2,
+            { label: { fr: '2 ans et plus', nl: '2 jaar en ouder' }, min: 24, max: null, dose: 200, prises: 2,
               libelle: { fr: '100 mg 2×/j pendant 3 jours', nl: '100 mg 2×/dag gedurende 3 dagen' } }
           ],
           duree: { fr: '3 jours', nl: '3 dagen' },
-          sources: [SRC_CBIP, SRC_RCP]
+          note: {
+            fr: 'En présence de signes d’infestation après 3 semaines, répéter le traitement.',
+            nl: 'Bij tekenen van besmetting na 3 weken de behandeling herhalen.'
+          },
+          sources: [SRC_CBIP]
         }
       ],
       precautions: [
@@ -1631,7 +1834,7 @@
           nl: 'Hygiënemaatregelen zijn onmisbaar (nagels, beddengoed, linnen).' }
       ],
       contreIndications: [
-        { fr: 'Enfant de moins de 1 an (expérience limitée).', nl: 'Kind jonger dan 1 jaar (beperkte ervaring).' }
+        { fr: 'Enfant de moins de 2 ans (le CBIP ne donne de posologie qu’à partir de 2 ans).', nl: 'Kind jonger dan 2 jaar (het BCFI geeft pas een posologie vanaf 2 jaar).' }
       ],
       sources: [SRC_CBIP]
     },
@@ -1641,18 +1844,20 @@
     /* ============================================================== */
     {
       id: 'vitamine-d',
-      dci: { fr: 'Cholécalciférol (vitamine D3)', nl: 'Colecalciferol (vitamine D3)' },
-      marques: ['D-Cure', 'Devaron', 'Sterogyl'],
+      dci: { fr: 'Colécalciférol (vitamine D3)', nl: 'Colecalciferol (vitamine D3)' },
+      marques: ['D-Cure', 'Vitamine D3 EG', 'Vitamine D Sandoz', 'Vibosun-D3', 'Fultivit-D3'],
       cbip: { fr: 'cholécalciférol', nl: 'colecalciferol' },
       categorie: 'supplement',
       frequent: true,
-      verifie: false,
-      synonymes: ['vitamine D', 'rachitisme', 'prevention', 'rachitis', 'preventie'],
+      verifie: true,
+      synonymes: ['vitamine D', 'rachitisme', 'prevention', 'rachitis', 'preventie', 'd-cure'],
       formes: [
-        { id: 'gouttes', nom: { fr: 'Gouttes 400 UI / goutte (à vérifier selon la spécialité)',
-                                nl: 'Druppels 400 IE / druppel (te controleren per specialiteit)' },
-          type: 'autre', parUnite: 400, uniteNom: U_GOUTTE },
-        { id: 'amp', nom: { fr: 'Ampoule 25 000 UI', nl: 'Ampul 25 000 IE' }, type: 'autre', parUnite: 25000, uniteNom: U_AMP }
+        { id: 'gouttes', nom: { fr: 'Gouttes D-Cure 2 400 UI / ml (1 ml = 36 gouttes ≈ 67 UI par goutte)',
+                                nl: 'D-Cure druppels 2 400 IE / ml (1 ml = 36 druppels ≈ 67 IE per druppel)' },
+          type: 'liquide', parMl: 2400,
+          note: { fr: '400 UI correspondent à environ 6 gouttes (0,17 ml). Vérifier la concentration : elle varie fortement d’une spécialité à l’autre.',
+                  nl: '400 IE komt overeen met ongeveer 6 druppels (0,17 ml). Controleer de concentratie: die verschilt sterk per specialiteit.' } },
+        { id: 'unidose', nom: { fr: 'Unidose / capsule 25 000 UI', nl: 'Unidosis / capsule 25 000 IE' }, type: 'autre', parUnite: 25000, uniteNom: U_AMP }
       ],
       schemas: [
         {
@@ -1663,66 +1868,81 @@
           },
           mode: 'paliers', unite: 'UI', critere: 'age',
           paliers: [
-            { label: { fr: '0 à 6 ans', nl: '0 tot 6 jaar' }, min: 0, max: 71, dose: 400, prises: 1,
+            { label: { fr: 'Jusqu’à 1 an', nl: 'Tot 1 jaar' }, min: 0, max: 11, dose: 400, prises: 1,
               libelle: { fr: '400 UI par jour', nl: '400 IE per dag' } },
-            { label: { fr: '6 ans et plus (à risque)', nl: '6 jaar en ouder (risicogroep)' }, min: 72, max: null, dose: 400, prises: 1,
-              libelle: { fr: '400 à 600 UI par jour', nl: '400 tot 600 IE per dag' } }
+            { label: { fr: 'Plus de 1 an (à risque)', nl: 'Ouder dan 1 jaar (risicogroep)' }, min: 12, max: null, dose: 400, prises: 1,
+              libelle: { fr: '400 UI par jour', nl: '400 IE per dag' } }
           ],
           duree: { fr: 'quotidien, toute l’année', nl: 'dagelijks, het hele jaar door' },
           note: {
-            fr: 'Recommandation belge : 400 UI/j de la naissance à 6 ans. Dose indépendante du poids.',
-            nl: 'Belgische aanbeveling: 400 IE/dag van de geboorte tot 6 jaar. Dosis onafhankelijk van het gewicht.'
+            fr: 'CBIP : 400 UI/jour sont conseillées par toutes les sources EBM chez tous les nourrissons et enfants jusqu’à 1 an ; des doses plus élevées peuvent être nécessaires chez le prématuré. Au-delà de 1 an, certaines sources EBM conseillent 400 UI/jour uniquement en présence de facteurs de risque (peau foncée, faible exposition au soleil, antiépileptiques inducteurs), d’autres jusqu’à 4 ou 6 ans et pendant les mois d’hiver. Traitement du rachitisme avéré : 3 000 à 5 000 UI/jour. Dose indépendante du poids.',
+            nl: 'BCFI: 400 IE/dag wordt door alle EBM-bronnen aanbevolen bij alle zuigelingen en kinderen tot 1 jaar; hogere doses kunnen nodig zijn bij prematuren. Boven 1 jaar bevelen sommige EBM-bronnen 400 IE/dag enkel aan bij risicofactoren (donkere huid, weinig blootstelling aan de zon, enzyminducerende anti-epileptica), andere tot 4 of 6 jaar en tijdens de wintermaanden. Behandeling van bewezen rachitis: 3 000 tot 5 000 IE/dag. Dosis onafhankelijk van het gewicht.'
           },
           sources: [SRC_CBIP]
         }
       ],
       precautions: [
-        { fr: 'Vérifier la concentration exacte de la spécialité : elle varie fortement d’une marque à l’autre.',
-          nl: 'Controleer de exacte concentratie van de specialiteit: die verschilt sterk per merk.' }
+        { fr: 'Vérifier la concentration exacte de la spécialité : elle varie fortement d’une marque à l’autre (D-Cure : 2 400 UI/ml en 36 gouttes, soit environ 67 UI par goutte).',
+          nl: 'Controleer de exacte concentratie van de specialiteit: die verschilt sterk per merk (D-Cure: 2 400 IE/ml in 36 druppels, dus ongeveer 67 IE per druppel).' },
+        { fr: 'Tenir compte des autres apports en vitamine D ; prudence avec les solutions fortement dosées (risque d’erreur de dosage et d’hypercalcémie).',
+          nl: 'Houd rekening met andere inname van vitamine D; wees voorzichtig met hoog gedoseerde oplossingen (risico op doseerfouten en hypercalciëmie).' }
       ],
-      contreIndications: [{ fr: 'Hypercalcémie.', nl: 'Hypercalciëmie.' }],
+      contreIndications: [
+        { fr: 'Hypercalcémie, calcification métastatique.', nl: 'Hypercalciëmie, metastatische verkalking.' }
+      ],
       sources: [SRC_CBIP]
     },
 
     {
       id: 'fer',
       dci: {
-        fr: 'Fer (sels ferreux) — exprimé en fer élément',
-        nl: 'IJzer (ferrozouten) — uitgedrukt in elementair ijzer'
+        fr: 'Fer — exprimé en fer élément',
+        nl: 'IJzer — uitgedrukt in elementair ijzer'
       },
-      marques: ['Losferron', 'Ferricure', 'Fer-In-Sol (disponibilité à vérifier)'],
+      marques: ['Ferricure', 'Losferron'],
       cbip: { fr: 'fer', nl: 'ijzer' },
       categorie: 'supplement',
       frequent: false,
-      verifie: false,
+      verifie: true,
       synonymes: ['anemie', 'ferriprive', 'martial', 'bloedarmoede', 'ijzertekort'],
+      doseExprimee: {
+        fr: 'Les doses sont exprimées en FER ÉLÉMENT.',
+        nl: 'De doses zijn uitgedrukt in ELEMENTAIR IJZER.'
+      },
       formes: [
-        { id: 'gouttes', nom: { fr: 'Gouttes (concentration variable — à vérifier)',
-                                nl: 'Druppels (wisselende concentratie — te controleren)' }, type: 'liquide', parMl: 25 }
+        { id: 'sol20', nom: { fr: 'Solution Ferricure 100 mg de fer(III) / 5 ml (20 mg/ml)',
+                              nl: 'Ferricure oplossing 100 mg ijzer(III) / 5 ml (20 mg/ml)' }, type: 'liquide', parMl: 20 },
+        { id: 'gel150', nom: { fr: 'Gélule Ferricure 150 mg de fer(III)', nl: 'Ferricure capsule 150 mg ijzer(III)' }, type: 'solide', parUnite: 150, uniteNom: U_GEL, pasUnite: 1 },
+        { id: 'cp80', nom: { fr: 'Comprimé effervescent Losferron 80 mg de fer(II)', nl: 'Losferron bruistablet 80 mg ijzer(II)' }, type: 'solide', parUnite: 80, uniteNom: U_CP }
       ],
       schemas: [
         {
           id: 'carence',
-          indication: { fr: 'Anémie ferriprive (traitement)', nl: 'IJzergebreksanemie (behandeling)' },
+          indication: { fr: 'Carence en fer / anémie ferriprive', nl: 'IJzertekort / ijzergebreksanemie' },
           mode: 'jour', unite: 'mg',
-          doseMin: 3, doseUsuelle: 4, doseMax: 6,
+          doseMin: 1, doseUsuelle: 4, doseMax: 6,
           prises: [1, 2], maxJour: 200,
           duree: {
-            fr: '3 mois, à poursuivre 2 à 3 mois après normalisation',
-            nl: '3 maanden, 2 tot 3 maanden voort te zetten na normalisatie'
+            fr: 'plusieurs mois, à poursuivre après normalisation',
+            nl: 'meerdere maanden, voort te zetten na normalisatie'
           },
           note: {
-            fr: 'Doses exprimées en FER ÉLÉMENT. Vérifier impérativement la teneur en fer élément de la spécialité.',
-            nl: 'Doses uitgedrukt in ELEMENTAIR IJZER. Controleer absoluut het gehalte aan elementair ijzer van de specialiteit.'
+            fr: 'CBIP : enfants 1 à 6 mg de fer élément/kg/jour ; adulte 60 à 200 mg de fer élément par jour. Le CBIP précise que les sources ne sont pas univoques. Rechercher la cause de la carence avant de supplémenter. Vérifier impérativement la teneur en fer élément de la spécialité choisie.',
+            nl: 'BCFI: kinderen 1 tot 6 mg elementair ijzer/kg/dag; volwassene 60 tot 200 mg elementair ijzer per dag. Het BCFI vermeldt dat de bronnen niet eenduidig zijn. Zoek de oorzaak van het tekort op vóór suppletie. Controleer absoluut het gehalte aan elementair ijzer van de gekozen specialiteit.'
           },
           sources: [SRC_CBIP]
         }
       ],
       precautions: [
-        { fr: 'À distance des produits laitiers et du thé.', nl: 'Niet samen met zuivelproducten of thee.' },
+        { fr: 'Absorption optimale 1 h avant ou 2 h après le repas ; la prise pendant le repas réduit les troubles digestifs mais diminue l’absorption.',
+          nl: 'Optimale absorptie 1 u voor of 2 u na de maaltijd; inname tijdens de maaltijd vermindert de maag-darmklachten maar ook de absorptie.' },
+        { fr: 'Boire les formes liquides et les comprimés effervescents à la paille pour éviter une coloration des dents.',
+          nl: 'Drink de vloeibare vormen en bruistabletten met een rietje om tandverkleuring te vermijden.' },
         { fr: 'Selles noires, constipation.', nl: 'Zwarte stoelgang, constipatie.' }
       ],
-      contreIndications: [{ fr: 'Surcharge en fer.', nl: 'IJzerstapeling.' }],
+      contreIndications: [
+        { fr: 'Surcharge en fer.', nl: 'IJzerstapeling.' }
+      ],
       sources: [SRC_CBIP]
     }
   ];
